@@ -14,3 +14,6 @@ hs_err_pid*
 
 /nbproject/private/
 nbproject/project.properties
+
+src/pascal/compiler/Lexer.java~
+src/pascal/compiler/Lexer.java
