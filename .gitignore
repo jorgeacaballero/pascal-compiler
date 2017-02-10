@@ -12,4 +12,4 @@
 hs_err_pid*
 /build/
 
-private.properties
+/nbproject/private/
