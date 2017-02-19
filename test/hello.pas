@@ -1,4 +1,4 @@
 program Hello;
-begin
+begin {test comment}
   writeln ('Hello, world.')
 end.
