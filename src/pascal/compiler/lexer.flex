@@ -8,21 +8,16 @@ import jflex.sym;
 %column
 %cup
 %caseless
-%ignorecase
 
-space = [ \t\f]|{jump}
 letter = [A-Za-z]
 digit = [0-9]
 num = {digit}+
 identifier = {letter}({letter}|{digit}|[_])*
-math_ops = [+|-|*|%|/]
+math_ops = [\+|\-|*|%|/]
 relation_ops = [\=|<>|>|<|>=|<=]
-boolean_ops = and{space}then|or{space}else|and|or|not
 asig = ":="
 type = string|integer|real|boolean|character
-reserved = Var
 io_ops = Writeln|Readln
-jump = \r|\n|\rn
 
 
 comment = \{.*\}
@@ -41,16 +36,16 @@ comment = \{.*\}
 	"{"				{ System.out.println("left key"); }
 	"}"				{ System.out.println("right key"); }
 	";"				{ System.out.println("semicolon"); }
+	":"				{ System.out.println("colon"); }
+	","				{ System.out.println("coma"); }
+	"."				{ System.out.println("dot"); }
 	{num}			{ System.out.println("num: " + yytext()); }
 	{comment}		{ System.out.println("comment: " + yytext().substring(1,yytext().length()-1)); }
 	{asig}			{ System.out.println("asign"); }
-	":"				{ System.out.println("colon"); }
 	{math_ops}		{ System.out.println("math_ops: " + yytext()); }
 	{relation_ops}	{ System.out.println("relation_ops: " + yytext()); }
-	{boolean_ops}	{ System.out.println("boolean_ops: " + yytext()); }
 	{type}			{ System.out.println("type: " + yytext()); }
 	{io_ops}		{ System.out.println("io_ops: " + yytext()); }
-	{reserved}		{ System.out.println("reserved: " + yytext()); }
 	{identifier}	{ System.out.println("identifier: " + yytext()); }
-	.				{}
+	.				{ System.out.println("******Illegal char '" + yytext() + "' at line " + (yyline+1)); }
 }

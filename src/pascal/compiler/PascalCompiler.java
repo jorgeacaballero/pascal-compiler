@@ -24,7 +24,7 @@ public class PascalCompiler {
         File file = new File("./src/pascal/compiler/lexer.flex");
         jflex.Main.generate(file);
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("./test/animal.pas"));
+            BufferedReader reader = new BufferedReader(new FileReader("./test/buble.pas"));
             Lexer lexer = new Lexer(reader);
             Integer token = lexer.next_token().sym;
             while (token != 0) {
