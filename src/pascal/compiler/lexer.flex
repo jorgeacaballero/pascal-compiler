@@ -2,9 +2,6 @@ package pascal.compiler;
 
 import java_cup.runtime.*;
 import java.io.Reader;
-import java_cup.runtime.Symbol;
-import java_cup.runtime.ComplexSymbolFactory;
-import java_cup.runtime.ComplexSymbolFactory.Location;
 
 %%
 
@@ -14,6 +11,7 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
 %char
 %line
 %column
+%caseless
 
 %{
 	StringBuffer string = new StringBuffer();
@@ -24,14 +22,13 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
 	ComplexSymbolFactory symbolFactory;
 
 	private Symbol symbol(String name, int sym) {
-		System.out.println(name);
-		return symbolFactory.newSymbol(name, sym, new Location(yyline+1,yycolumn+1), new Location(yyline+1,yycolumn+yylength()));
+		System.out.println("name: " + name + " sym: " + sym);
+		return new Symbol(sym, yyline, yycolumn);
 	}
 
 	private Symbol symbol(String name, int sym, Object val) {
-		Location left = new Location(yyline+1,yycolumn+1);
-		Location right= new Location(yyline+1,yycolumn+yylength());
-		return symbolFactory.newSymbol(name, sym, left, right,val);
+		System.out.println("name: " + name + " sym: " + sym + " val: " + val);
+		return new Symbol(sym, yyline, yycolumn, val);
 	}
 
 	private void error(String message) {
@@ -47,12 +44,11 @@ integer = {digit}+
 
 id = {letter}({letter}|{digit}|[_])*
 
-
-
 comment = \{.*\}
 %%
 
 <YYINITIAL> {
+	[ \n\t]+		{ }
 	"program"		{ return symbol("program", sym.PROGRAM); }
 	"begin"			{ return symbol("begin", sym.BEGIN); }
 	"writeln"		{ return symbol("writeln", sym.WRITE_LN); }
@@ -110,5 +106,6 @@ comment = \{.*\}
 	{id}			{ return symbol("id", sym.ID, yytext()); }
 
 	{comment}		{ System.out.println("comment: " + yytext().substring(1,yytext().length()-1)); }
+
 	.				{ error("Illegal character <"+ yytext()+"> @ Line " + (yyline+1)); }
 }

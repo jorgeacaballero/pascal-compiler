@@ -1,5 +1,5 @@
 program Hello;
-begin {test comment}
+begin
   writeln ('Hello, world.')
   num := 0
 end.

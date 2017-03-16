@@ -36,20 +36,15 @@ public class PascalCompiler {
             Logger.getLogger(PascalCompiler.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        System.out.println("QUE PEDOS");
-
         boolean mvAS = moveFile("AnalizadorSintactico.java");
         boolean mvSym= moveFile("sym.java");
 
         try {
-            
+
             BufferedReader reader = new BufferedReader(new FileReader("./test/buble.pas"));
             Lexer lexer = new Lexer(reader);
             Integer token = lexer.next_token().sym;
             while (token != 0) {
-                System.out.println(token);
-                System.out.println("token");
-
                 token = lexer.next_token().sym;
             }
         } catch (Exception e) {
