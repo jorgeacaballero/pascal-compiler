@@ -2,52 +2,113 @@ package pascal.compiler;
 
 import java_cup.runtime.*;
 import java.io.Reader;
+import java_cup.runtime.Symbol;
+import java_cup.runtime.ComplexSymbolFactory;
+import java_cup.runtime.ComplexSymbolFactory.Location;
 
 %%
 
+%public
 %class Lexer
-%unicode
+%cup
+%char
 %line
 %column
-%cup
-%caseless
+
+%{
+	StringBuffer string = new StringBuffer();
+	public Lexer(java.io.Reader in, ComplexSymbolFactory sf){
+	this(in);
+	symbolFactory = sf;
+	}
+	ComplexSymbolFactory symbolFactory;
+
+	private Symbol symbol(String name, int sym) {
+		System.out.println(name);
+		return symbolFactory.newSymbol(name, sym, new Location(yyline+1,yycolumn+1), new Location(yyline+1,yycolumn+yylength()));
+	}
+
+	private Symbol symbol(String name, int sym, Object val) {
+		Location left = new Location(yyline+1,yycolumn+1);
+		Location right= new Location(yyline+1,yycolumn+yylength());
+		return symbolFactory.newSymbol(name, sym, left, right,val);
+	}
+
+	private void error(String message) {
+		System.out.println("Error at line "+(yyline+1)+", column "+(yycolumn+1)+" : "+message);
+	}
+%}
 
 letter = [A-Za-z]
 digit = [0-9]
-num = {digit}+
-identifier = {letter}({letter}|{digit}|[_])*
-math_ops = [\+|\-|*|%|/]
-relation_ops = [\=|<>|>|<|>=|<=]
-asig = ":="
-type = string|integer|real|boolean|character
-io_ops = Writeln|Readln
+
+boolean = "true"|"false"
+integer = {digit}+
+
+id = {letter}({letter}|{digit}|[_])*
+
 
 
 comment = \{.*\}
 %%
 
 <YYINITIAL> {
-	"program"		{ System.out.println("program"); return new Symbol(sym.PROGRAM); }
-	"begin"			{ System.out.println("begin"); return new Symbol(sym.BEGIN); }
-	"writeln"		{ System.out.println("writeln"); return new Symbol(sym.WRITE_LN); }
-	"end"			{ System.out.println("end"); return new Symbol(sym.END); }
-	"("				{ System.out.println("left parentesis"); return new Symbol(sym.LEFT_PAR); }
-	")"				{ System.out.println("right parentesis"); return new Symbol(sym.RIGHT_PAR); }
-	"["				{ System.out.println("left bracket"); return new Symbol(sym.LEFT_BRACKET); }
-	"]"				{ System.out.println("right bracket"); return new Symbol(sym.RIGHT_BRACKET); }
-	"{"				{ System.out.println("left key"); return new Symbol(sym.LEFT_KEY); }
-	"}"				{ System.out.println("right key"); return new Symbol(sym.RIGHT_KEY); }
-	";"				{ System.out.println("semicolon"); return new Symbol(sym.SEMICOLON); }
-	":"				{ System.out.println("colon"); return new Symbol(sym.COLON); }
-	","				{ System.out.println("coma"); return new Symbol(sym.COMA); }
-	"."				{ System.out.println("dot"); return new Symbol(sym.DOT); }
-	":="			{ System.out.println("asign"); return new Symbol(sym.ASIGN); }
-	{num}			{ System.out.println("num: " + yytext()); return new Symbol(sym.BEGIN); }
-	{comment}		{ System.out.println("comment: " + yytext().substring(1,yytext().length()-1)); return new Symbol(sym.BEGIN); }
-	{math_ops}		{ System.out.println("math_ops: " + yytext()); return new Symbol(sym.BEGIN); }
-	{relation_ops}	{ System.out.println("relation_ops: " + yytext()); return new Symbol(sym.BEGIN); }
-	{type}			{ System.out.println("type: " + yytext()); return new Symbol(sym.BEGIN); }
-	{io_ops}		{ System.out.println("io_ops: " + yytext()); return new Symbol(sym.BEGIN); }
-	{identifier}	{ System.out.println("identifier: " + yytext()); return new Symbol(sym.BEGIN); }
-	.				{ System.out.println("******Illegal char '" + yytext() + "' at line " + (yyline+1)); return new Symbol(sym.BEGIN); }
+	"program"		{ return symbol("program", sym.PROGRAM); }
+	"begin"			{ return symbol("begin", sym.BEGIN); }
+	"writeln"		{ return symbol("writeln", sym.WRITE_LN); }
+	"end"			{ return symbol("end", sym.END); }
+	"and"			{ return symbol("and", sym.AND); }
+	"array"			{ return symbol("array", sym.ARRAY); }
+	"const"			{ return symbol("const", sym.CONST); }
+	"div"			{ return symbol("div", sym.DIV); }
+	"do"			{ return symbol("do", sym.DO); }
+	"else"			{ return symbol("else", sym.ELSE); }
+	"for"			{ return symbol("for", sym.FOR); }
+	"function"		{ return symbol("function", sym.FUNCTION); }
+	"if"			{ return symbol("if", sym.IF); }
+	"nil"			{ return symbol("nil", sym.NIL); }
+	"not"			{ return symbol("not", sym.NOT); }
+	"of"			{ return symbol("of", sym.OF); }
+	"or"			{ return symbol("or", sym.OR); }
+	"procedure"		{ return symbol("procedure", sym.PROCEDURE); }
+	"record"		{ return symbol("record", sym.RECORD); }
+	"then"			{ return symbol("then", sym.THEN); }
+	"to"			{ return symbol("to", sym.TO); }
+	"type"			{ return symbol("type", sym.TYPE); }
+	"var"			{ return symbol("var", sym.VAR); }
+	"while"			{ return symbol("while", sym.WHILE); }
+	"("				{ return symbol("(", sym.LEFT_PAR); }
+	")"				{ return symbol(")", sym.RIGHT_PAR); }
+	"["				{ return symbol("[", sym.LEFT_BRACKET); }
+	"]"				{ return symbol("]", sym.RIGHT_BRACKET); }
+	"{"				{ return symbol("{", sym.LEFT_KEY); }
+	"}"				{ return symbol("}", sym.RIGHT_KEY); }
+	";"				{ return symbol(";", sym.SEMICOLON); }
+	":"				{ return symbol(":", sym.COLON); }
+	","				{ return symbol(",", sym.COMA); }
+	"."				{ return symbol(".", sym.DOT); }
+	":="			{ return symbol(":=", sym.ASIGN); }
+	"+"				{ return symbol("+", sym.PLUS); }
+	"-"				{ return symbol("-", sym.MINUS); }
+	"/"				{ return symbol("/", sym.DEVIDE); }
+	"*"				{ return symbol("*", sym.PRODUCT); }
+	"%"				{ return symbol("%", sym.MOD); }
+	"="				{ return symbol("=", sym.EQUALS); }
+	"<>"			{ return symbol("<>", sym.NOT_EQUAL); }
+	">"				{ return symbol(">", sym.GREATER_THAN); }
+	"<"				{ return symbol("<", sym.LESS_THAN); }
+	">="			{ return symbol(">=", sym.GREATER_EQUALS); }
+	"<="			{ return symbol("<=", sym.LESS_EQUAL); }
+	"boolean"		{ return symbol("boolean", sym.BOOLEAN); }
+	"true"			{ return symbol("true", sym.TRUE); }
+	"false"			{ return symbol("false", sym.FALSE); }
+	"char"			{ return symbol("char", sym.CHAR); }
+	"integer"		{ return symbol("integer", sym.INTEGER); }
+
+	{letter}		{ return symbol("charconst", sym.CHAR_CONS, yytext()); }
+	{integer}		{ return symbol("integerconst", sym.INT_CONST, yytext()); }
+	{id}			{ return symbol("id", sym.ID, yytext()); }
+
+	{comment}		{ System.out.println("comment: " + yytext().substring(1,yytext().length()-1)); }
+	.				{ error("Illegal character <"+ yytext()+"> @ Line " + (yyline+1)); }
 }

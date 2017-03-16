@@ -26,61 +26,58 @@ public class PascalCompiler {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        String[] alexico = {"./src/pascal/compiler/lexer.flex"};
-        jflex.Main.main(alexico);
+        String[] jfelx_file = {"./src/pascal/compiler/lexer.flex"};
+        jflex.Main.main(jfelx_file);
+
         String[] cup_file = {"-parser", "AnalizadorSintactico", "./src/pascal/compiler/sintax.cup"};
         try {
-            System.out.println("FUCK");
             java_cup.Main.main(cup_file);
         } catch (Exception ex) {
             Logger.getLogger(PascalCompiler.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+        System.out.println("QUE PEDOS");
 
-        boolean mvAS = moverArch("AnalizadorSintactico.java");
-        boolean mvSym= moverArch("sym.java");
-        if(mvAS && mvSym){
-            System.exit(0);
-        }
+        boolean mvAS = moveFile("AnalizadorSintactico.java");
+        boolean mvSym= moveFile("sym.java");
 
         try {
+            
             BufferedReader reader = new BufferedReader(new FileReader("./test/buble.pas"));
             Lexer lexer = new Lexer(reader);
             Integer token = lexer.next_token().sym;
-            String[] archivoPrueba = {"./test/buble.pas"};
-            AnalizadorSintactico.main(archivoPrueba);
             while (token != 0) {
                 System.out.println(token);
+                System.out.println("token");
+
                 token = lexer.next_token().sym;
             }
         } catch (Exception e) {
             System.out.println(e);
         }
 
+//        String[] archivoPrueba = {"./test/buble.pas"};
+//        AnalizadorSintactico.main(archivoPrueba);
+
     }
 
-    public static boolean moverArch(String archNombre) {
-        boolean efectuado = false;
-        File arch = new File(archNombre);
+    public static boolean moveFile(String fileName) {
+        boolean done = false;
+        File arch = new File(fileName);
         if (arch.exists()) {
-            System.out.println("\n*** Moviendo " + arch + " \n***");
             Path currentRelativePath = Paths.get("");
-            String nuevoDir = currentRelativePath.toAbsolutePath().toString()
+            String newDir = currentRelativePath.toAbsolutePath().toString()
                     + File.separator + "src" + File.separator
                     + "pascal/compiler" + File.separator + arch.getName();
-            File archViejo = new File(nuevoDir);
-            archViejo.delete();
-            if (arch.renameTo(new File(nuevoDir))) {
-                System.out.println("\n*** Generado " + archNombre + "***\n");
-                efectuado = true;
-            } else {
-                System.out.println("\n*** No movido " + archNombre + " ***\n");
+            File oldFile = new File(newDir);
+            oldFile.delete();
+            if (arch.renameTo(new File(newDir))) {
+                done = true;
             }
-
         } else {
-            System.out.println("\n*** Codigo no existente ***\n");
+            System.out.println("\nCode not found\n");
         }
-        return efectuado;
+        return done;
     }
 
 }
