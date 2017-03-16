@@ -3,6 +3,10 @@ package pascal.compiler;
 import java_cup.runtime.*;
 import java.io.Reader;
 
+import java_cup.runtime.Symbol;
+import java_cup.runtime.ComplexSymbolFactory;
+import java_cup.runtime.ComplexSymbolFactory.Location;
+
 %%
 
 %public
@@ -14,12 +18,6 @@ import java.io.Reader;
 %caseless
 
 %{
-	StringBuffer string = new StringBuffer();
-	public Lexer(java.io.Reader in, ComplexSymbolFactory sf){
-	this(in);
-	symbolFactory = sf;
-	}
-	ComplexSymbolFactory symbolFactory;
 
 	private Symbol symbol(String name, int sym) {
 		System.out.println("name: " + name + " sym: " + sym);

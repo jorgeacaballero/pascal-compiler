@@ -8,6 +8,7 @@ package pascal.compiler;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.Level;
@@ -40,16 +41,17 @@ public class PascalCompiler {
         boolean mvSym= moveFile("sym.java");
 
         try {
-
             BufferedReader reader = new BufferedReader(new FileReader("./test/buble.pas"));
             Lexer lexer = new Lexer(reader);
             Integer token = lexer.next_token().sym;
+
             while (token != 0) {
                 token = lexer.next_token().sym;
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.out.println(e);
         }
+
 
 //        String[] archivoPrueba = {"./test/buble.pas"};
 //        AnalizadorSintactico.main(archivoPrueba);
