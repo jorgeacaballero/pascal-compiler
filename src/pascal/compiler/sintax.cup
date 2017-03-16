@@ -11,7 +11,7 @@ parser code {:
         if (info instanceof java_cup.runtime.Symbol) {
             java_cup.runtime.Symbol s = ((java_cup.runtime.Symbol) info);
             if (s.left >= 0) {
-                m.append(" in line "+(s.left+1));
+                m.append(" at line "+(s.left+1));
                 if (s.right >= 0)
                     m.append(", column "+(s.right+1));
             }

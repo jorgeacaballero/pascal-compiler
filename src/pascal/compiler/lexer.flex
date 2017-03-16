@@ -30,7 +30,7 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
 	}
 
 	private void error(String message) {
-		System.out.println("Error at line "+(yyline+1)+", column "+(yycolumn+1)+" : "+message);
+		System.err.println("Error at line "+(yyline+1)+", column "+(yycolumn+1)+" : "+message);
 	}
 %}
 

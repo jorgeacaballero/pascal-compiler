@@ -41,7 +41,7 @@ public class PascalCompiler {
         boolean mvSym= moveFile("sym.java");
 
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("./test/buble.pas"));
+            BufferedReader reader = new BufferedReader(new FileReader("./test/hello.pas"));
             Lexer lexer = new Lexer(reader);
             Integer token = lexer.next_token().sym;
 
@@ -53,8 +53,8 @@ public class PascalCompiler {
         }
 
 
-//        String[] archivoPrueba = {"./test/buble.pas"};
-//        AnalizadorSintactico.main(archivoPrueba);
+        String[] archivoPrueba = {"./test/hello.pas"};
+        AnalizadorSintactico.main(archivoPrueba);
 
     }
 
