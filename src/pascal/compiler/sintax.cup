@@ -48,9 +48,10 @@ terminal  PROGRAM, BEGIN, WRITE_LN, END, AND, ARRAY, CONST, DIV, DO, ELSE,
 		  FOR, FUNCTION, IF, NIL, NOT, OF, OR, PROCEDURE, RECORD, THEN, TO, DOWNTO,
 		  TYPE, VAR, WHILE, LEFT_PAR, RIGHT_PAR, LEFT_BRACKET, RIGHT_BRACKET,
 		  LEFT_KEY, RIGHT_KEY, SEMICOLON, COLON, COMMA, DOT, ASIGN, PLUS, MINUS,
-		  DEVIDE, PRODUCT, XOR, MOD, EQUALS, NOT_EQUAL, GREATER_THAN, LESS_THAN,
+		  DIVIDE, PRODUCT, XOR, MOD, EQUALS, NOT_EQUAL, GREATER_THAN, LESS_THAN,
 		  GREATER_EQUALS, LESS_EQUAL, BOOLEAN, TRUE, FALSE, CHAR, INTEGER,
-		  CHAR_CONS, INT_CONST, ID, IN, STRING, SET, FILE, ;
+		  CHAR_CONS, INT_CONST, ID, IN, STRING, SET, FILE, PACKED, CASE, FORWARD, REPEAT,
+		  UNTIL;
 
 
 non terminal pascalProgram, programHeading, identifierList, block, labelDeclaration,
@@ -260,7 +261,7 @@ fieldidList::=
 
 
 variantPart::=
-								case tagField OF variantList {:
+								CASE tagField OF variantList {:
 									:}
 							;
 
@@ -311,10 +312,10 @@ procAndFuncDeclaration::=
 
 
 procOrFunc::=
-								PROCEDURE  ID parameters SEMICOLON  blockOrForward {:
+								PROCEDURE ID parameters SEMICOLON  blockOrForward {:
 									:}
 							|
-								function  ID parameters COLON typeid SEMICOLON blockOrForward {:
+								FUNCTION ID parameters COLON typeid SEMICOLON blockOrForward {:
 									:}
 							;
 
@@ -323,7 +324,7 @@ blockOrForward::=
 								block{:
 									:}
 							|
-								forward  {:
+								FORWARD  {:
 									:}
 							;
 
@@ -353,7 +354,7 @@ formalParameterSection::=
 								PROCEDURE ID parameters {:
 									:}
 							|
-								function ID parameters COLON typeid {:
+								FUNCTION ID parameters COLON typeid {:
 									:}
 							;
 
@@ -386,16 +387,16 @@ statement::=
 								BEGIN statementList END  {:
 									:}
 							|
-								IF expression then statement {:
+								IF expression THEN statement {:
 									:}
 							|
-								IF expression then statement else statement  {:
+								IF expression THEN statement ELSE statement  {:
 									:}
 							|
 								WHILE expression DO statement  {:
 									:}
 							|
-								REPEAT statementList until expression {:
+								REPEAT statementList UNTIL expression {:
 									:}
 							|
 								FOR varid ASIGN forList DO statement  {:
@@ -584,9 +585,6 @@ primaryExpression::=
 									:}
 							|
 								INTEGER  {:
-									:}
-							|
-								unsignedReal  {:
 									:}
 							|
 								STRING  {:

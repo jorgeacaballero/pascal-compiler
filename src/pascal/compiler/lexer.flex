@@ -76,6 +76,10 @@ comment = \{.*\}
 	"file"			{ return symbol("file", sym.FILE); }
 	"while"			{ return symbol("while", sym.WHILE); }
 	"packed"		{ return symbol("packed", sym.PACKED); }
+	"case"			{ return symbol("case", sym.CASE); }
+	"forward"		{ return symbol("forward", sym.FORWARD); }
+	"repeat"		{ return symbol("repeat", sym.REPEAT); }
+	"until"			{ return symbol("until", sym.UNTIL); }
 	"("				{ return symbol("(", sym.LEFT_PAR); }
 	")"				{ return symbol(")", sym.RIGHT_PAR); }
 	"["				{ return symbol("[", sym.LEFT_BRACKET); }
@@ -89,7 +93,7 @@ comment = \{.*\}
 	":="			{ return symbol(":=", sym.ASIGN); }
 	"+"				{ return symbol("+", sym.PLUS); }
 	"-"				{ return symbol("-", sym.MINUS); }
-	"/"				{ return symbol("/", sym.DEVIDE); }
+	"/"				{ return symbol("/", sym.DIVIDE); }
 	"*"				{ return symbol("*", sym.PRODUCT); }
 	"^"				{ return symbol("^", sym.XOR); }
 	"mod"			{ return symbol("mod", sym.MOD); }
