@@ -61,6 +61,17 @@ terminal Integer ENTERO;
    no tienen tipo, pudiendo ser entero o String. */
 non terminal Object     expr_list, expr_part;
 non terminal Integer    expr, factor, termino;
+non terminal pascalProgram, programHeading, identifierList, block, labelDeclaration,
+             constantDeclaration, typeDeclaration, variableDeclaration, variableidList,
+             constant, TYPE, simpleType, structuredType, indexList, fieldList, fixedPart,
+             recordField, fieldidList, variantPart, tagField, variantList, variant,
+             caseLabelList, procAndFuncDeclaration, procOrFunc, blockOrForward, parameters,
+             formalParameterList, formalParameterSection, parameteridList, statementList,
+             statement, variable, subscriptList, caseList, forList, expressionList, label,
+             recordVariableList, expression, relationalOp, additiveExpression, additiveOp,
+             multiplicativeExpression, multiplicativeOp, unaryExpression, unaryOp,
+             primaryExpression, elementList, element, constid, typeid, funcid, procid,
+             fieldid, varid, empty;
 
 
 /* -------------Seccion de predencia y asociacion de los terminales----------- */
@@ -105,3 +116,570 @@ non terminal Integer    expr, factor, termino;
                   |
                   expr_part
                   ;
+
+    pascalProgram::= 
+       PROGRAM ID programHeading SEMICOLON block DOT {:
+            :};
+
+
+    programHeading::=  
+       LEFT_PAR identifierList RIGHT_PAR{:
+            :};
+
+
+    identifierList::= 
+       ID  {:
+            :}
+            |
+       identifierList COMMA ID  {:
+            :};
+
+
+    block::=  
+       block {:
+            :}
+            | 
+       labelDeclaration SEMICOLON block  {:
+            :}
+            |
+       constantDeclaration SEMICOLON block {:
+            :}
+            |
+       typeDeclaration SEMICOLON block {:
+            :}
+            |
+       variableDeclaration SEMICOLON block  {:
+            :}
+            |
+       variableDeclaration SEMICOLON block  {:
+            :}
+            |
+       procAndFuncDeclaration SEMICOLON block  {:
+            :}
+            |
+       BEGIN statementList END  {:
+            :}
+            ;
+
+
+    labelDeclaration::=  
+       label unsignedInteger  {:
+            :}
+            |
+       labelDeclaration COMMA unsignedInteger  {:
+            :};
+
+
+    constantDeclaration::=  
+       CONST  ID EQUALS constant  {:
+            :}
+            |
+       constantDeclaration SEMICOLON  ID EQUALS constant  {:
+            :};
+
+
+    typeDeclaration::=  
+       TYPE  ID EQUALS TYPE  {:
+            :}
+            |
+       typeDeclaration SEMICOLON  ID EQUALS TYPE  {:
+            :};
+
+
+    variableDeclaration::=  
+       VAR variableidList COLON TYPE  {:
+            :}
+            |
+       variableDeclaration SEMICOLON variableidList COLON TYPE  {:
+            :};
+
+
+    variableidList::=  
+       ID  {:
+            :}
+            |
+       variableidList COMMA  ID  {:
+            :};
+
+    constant::=  
+       INTEGER {:
+            :}
+            | 
+       real {:
+            :}
+            |
+       STRING{:
+            :}
+            |
+       constid  {:
+            :}
+            ;
+
+
+    TYPE::=  
+       simpleType  {:
+            :}
+            |
+       structuredType  {:
+            :}
+            |
+       ^ typeid  {:
+            :};
+
+
+    simpleType::=  
+       LEFT_PAR  identifierList RIGHT_PAR  {:
+            :}
+            |
+     /*  constant ... constant  {:
+            :}
+            | */
+       typeid {:
+            :}  ;
+
+
+    structuredType::=  
+       ARRAY LEFT_BRACKET indexList RIGHT_BRACKET OF TYPE  {:
+            :} 
+            |
+       record fieldList END  {:
+            :} 
+            |
+       set OF simpleType  {:
+            :} 
+            |
+       file OF TYPE  {:
+            :} 
+            |
+       packed structuredType  {:
+            :} ;
+
+
+    indexList::=  
+       simpleType  {:
+            :} 
+            |
+       indexList COMMA simpleType  {:
+            :} ;
+
+
+    fieldList::=  
+       fixedPart  {:
+            :} 
+            |
+       fixedPart SEMICOLON variantPart {:
+            :} 
+            |
+       variantPart {:
+            :} ;
+
+
+    fixedPart::=  
+       recordField {:
+            :} 
+            |
+       fixedPart SEMICOLON recordField {:
+            :} ;
+
+
+    recordField::= 
+       empty {:
+            :} 
+            |
+       fieldidList COLON TYPE   {:
+            :} 
+            ;
+
+
+    fieldidList::=  
+       ID  {:
+            :} 
+            |
+       fieldidList COMMA  ID  {:
+            :} 
+            ;
+
+
+    variantPart::= 
+       case tagField OF variantList {:
+            :} 
+            ;
+
+
+    tagField::= 
+       typeid  {:
+            :} 
+            |
+       ID COLON typeid  {:
+            :} 
+            ;
+
+
+    variantList::=  
+       variant {:
+            :} 
+            |
+       variantList SEMICOLON variant {:
+            :} 
+            ;
+
+
+    variant::= 
+       empty {:
+            :} 
+            |
+       caseLabelList COLON LEFT_PAR fieldList RIGHT_PAR  {:
+            :} 
+            ;
+
+
+    caseLabelList::=  
+       constant  {:
+            :} 
+            |
+       caseLabelList COMMA constant  {:
+            :} 
+            ;
+
+
+    procAndFuncDeclaration::=  
+       procOrFunc  {:
+            :} 
+            |
+       procAndFuncDeclaration SEMICOLON procOrFunc {:
+            :} 
+            ;
+
+
+    procOrFunc::=  
+       PROCEDURE  ID parameters SEMICOLON  blockOrForward {:
+            :} 
+            |
+       function  ID parameters COLON typeid SEMICOLON blockOrForward {:
+            :} 
+            ;
+
+
+    blockOrForward::=  
+       block{:
+            :} 
+            |  
+       forward  {:
+            :} 
+            ;
+
+
+    parameters::=  
+       LEFT_PAR formalParameterList RIGHT_PAR{:
+            :} 
+            ;
+
+
+    formalParameterList::=  
+       formalParameterSection  {:
+            :} 
+            |
+       formalParameterList SEMICOLON formalParameterSection  {:
+            :} 
+            ;
+
+
+    formalParameterSection::=  
+       parameteridList COLON typeid {:
+            :} 
+            |
+       VAR parameteridList COLON typeid  {:
+            :} 
+            |
+       PROCEDURE ID parameters {:
+            :} 
+            |
+       function ID parameters COLON typeid {:
+            :} 
+            ;
+
+
+    parameteridList::=  
+       ID  {:
+            :} 
+            |
+       parameteridList COMMA ID  {:
+            :} 
+            ;
+
+
+    statementList::=  
+       statement  {:
+            :} 
+            |
+       statementList SEMICOLON statement  {:
+            :} 
+            ;
+
+
+    statement::=  
+       empty  {:
+            :} 
+            |
+       variable := expression  {:
+            :} 
+            |
+       BEGIN statementList END  {:
+            :} 
+            |
+       if expression then statement {:
+            :} 
+            |
+       if expression then statement else statement  {:
+            :} 
+            |
+       case expression OF caseList END  {:
+            :} 
+            |
+       while expression DO statement  {:
+            :} 
+            |
+       repeat statementList until expression {:
+            :} 
+            | 
+       FOR varid := forList DO statement  {:
+            :} 
+            |
+       procid  {:
+            :} 
+            |
+       procid LEFT_PAR expressionList RIGHT_PAR{:
+            :} 
+            |
+       goto label {:
+            :} 
+            |
+       with recordVariableList DO statement  {:
+            :} 
+            |
+       label COLON statement  {:
+            :} 
+            ;
+
+
+    variable::=  
+       ID  {:
+            :} 
+            |
+       variable LEFT_BRACKET subscriptList RIGHT_BRACKET  {:
+            :} 
+            |
+       variable DOT fieldid  {:
+            :} 
+            |
+       variable ^  {:
+            :} 
+            ;
+
+
+    subscriptList::=  
+       expression  {:
+            :} 
+            |
+       subscriptList COMMA expression  {:
+            :} 
+            ;
+
+
+    caseList::=  
+       caseLabelList COLON statement  {:
+            :} 
+            |
+       caseList SEMICOLON caseLabelList COLON statement  {:
+            :} 
+            ;
+
+
+    forList::=  
+       expression to expression  {:
+            :} 
+            |
+       expression downto expression  {:
+            :} 
+            ;
+
+
+    expressionList::=  
+       expression  {:
+            :} 
+            |
+       expressionList COMMA expression  {:
+            :} 
+            ;
+
+
+    label::=  
+       unsignedInteger{:
+            :} 
+            ;
+
+
+    recordVariableList::=  
+       variable  {:
+            :} 
+            |
+       recordVariableList COMMA variable  {:
+            :} 
+            ;
+
+
+    expression::= 
+       expression relationalOp additiveExpression {:
+            :} 
+            |
+       additiveExpression  {:
+            :} 
+            ;
+
+
+    relationalOp::= one OF {:
+            :} 
+            |
+       LESS_THAN LESS_EQUAL EQUALS NOT_EQUAL GREATER_EQUALS GREATER_THAN {:
+            :} 
+            ;
+     
+
+    additiveExpression::= 
+       additiveExpression additiveOp multiplicativeExpression {:
+            :} 
+            |
+       multiplicativeExpression  {:
+            :} 
+            ;
+
+
+    additiveOp::= one OF {:
+            :} 
+            |
+       PLUS  MINUS  OR {:
+            :} 
+            ;
+
+
+    multiplicativeExpression::= 
+       multiplicativeExpression multiplicativeOp unaryExpression {:
+            :} 
+            |
+       unaryExpression  {:
+            :} 
+            ;
+
+
+    multiplicativeOp::= one OF {:
+            :} 
+            |
+       PRODUCT  DIVIDE DIV MOD  AND  in {:
+            :} 
+            ;
+
+
+    unaryExpression::= 
+       unaryOp unaryExpression  {:
+            :} 
+            |
+       primaryExpression  {:
+            :} 
+            ;
+
+
+    unaryOp::=  one OF {:
+            :} 
+            |
+       PLUS  MINUS  not {:
+            :} 
+            ;
+
+
+    primaryExpression::=  
+       variable  {:
+            :} 
+            |
+       unsignedInteger  {:
+            :} 
+            |
+       unsignedReal  {:
+            :} 
+            |
+       STRING  {:
+            :} 
+            |
+       NIL  {:
+            :} 
+            |
+       funcid LEFT_PAR expressionList RIGHT_PAR {:
+            :} 
+            |
+       LEFT_BRACKET elementList RIGHT_BRACKET {:
+            :} 
+            |
+       LEFT_PAR expression RIGHT_PAR  {:
+            :} 
+            ;
+
+
+    elementList::=  
+       empty  {:
+            :} 
+            |
+       element  {:
+            :} 
+            |
+       elementList COMMA element  {:
+            :} 
+            ;
+
+
+    element::=  
+       expression  {:
+            :} 
+            |
+       element expression  {:
+            :} 
+            ;
+
+
+    constid::=  
+       ID  {:
+            :} 
+            ;
+
+
+    typeid::=  
+       ID  {:
+            :} 
+            ;
+
+
+    funcid::= 
+       ID  {:
+            :} 
+            ;
+
+
+    procid::=  
+       ID  {:
+            :} 
+            ;
+
+
+    fieldid::=  
+       ID   {:
+            :} 
+            ;
+
+      
+    varid::= 
+       ID  {:
+            :} 
+            ;
+
+
+    empty::= {:
+            :} 
+            ;
