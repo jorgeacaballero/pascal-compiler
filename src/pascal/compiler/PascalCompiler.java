@@ -52,9 +52,8 @@ public class PascalCompiler {
             System.out.println(e);
         }
 
-
-        // String[] archivoPrueba = {"./test/hello.pas"};
-        // AnalizadorSintactico.main(archivoPrueba);
+        String[] archivoPrueba = {"./test/buble.pas"};
+        AnalizadorSintactico.main(archivoPrueba);
 
     }
 

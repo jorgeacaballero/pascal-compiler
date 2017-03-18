@@ -58,6 +58,7 @@ comment = \{.*\}
 	"do"			{ return symbol("do", sym.DO); }
 	"else"			{ return symbol("else", sym.ELSE); }
 	"for"			{ return symbol("for", sym.FOR); }
+	"in"			{ return symbol("in", sym.IN); }
 	"function"		{ return symbol("function", sym.FUNCTION); }
 	"if"			{ return symbol("if", sym.IF); }
 	"nil"			{ return symbol("nil", sym.NIL); }
@@ -68,9 +69,13 @@ comment = \{.*\}
 	"record"		{ return symbol("record", sym.RECORD); }
 	"then"			{ return symbol("then", sym.THEN); }
 	"to"			{ return symbol("to", sym.TO); }
+	"downto"		{ return symbol("downto", sym.DOWNTO); }
 	"type"			{ return symbol("type", sym.TYPE); }
+	"set"			{ return symbol("set", sym.SET); }
 	"var"			{ return symbol("var", sym.VAR); }
+	"file"			{ return symbol("file", sym.FILE); }
 	"while"			{ return symbol("while", sym.WHILE); }
+	"packed"		{ return symbol("packed", sym.PACKED); }
 	"("				{ return symbol("(", sym.LEFT_PAR); }
 	")"				{ return symbol(")", sym.RIGHT_PAR); }
 	"["				{ return symbol("[", sym.LEFT_BRACKET); }
@@ -79,13 +84,14 @@ comment = \{.*\}
 	"}"				{ return symbol("}", sym.RIGHT_KEY); }
 	";"				{ return symbol(";", sym.SEMICOLON); }
 	":"				{ return symbol(":", sym.COLON); }
-	","				{ return symbol(",", sym.COMA); }
+	","				{ return symbol(",", sym.COMMA); }
 	"."				{ return symbol(".", sym.DOT); }
 	":="			{ return symbol(":=", sym.ASIGN); }
 	"+"				{ return symbol("+", sym.PLUS); }
 	"-"				{ return symbol("-", sym.MINUS); }
 	"/"				{ return symbol("/", sym.DEVIDE); }
 	"*"				{ return symbol("*", sym.PRODUCT); }
+	"^"				{ return symbol("^", sym.XOR); }
 	"mod"			{ return symbol("mod", sym.MOD); }
 	"="				{ return symbol("=", sym.EQUALS); }
 	"<>"			{ return symbol("<>", sym.NOT_EQUAL); }
@@ -98,6 +104,7 @@ comment = \{.*\}
 	"false"			{ return symbol("false", sym.FALSE); }
 	"char"			{ return symbol("char", sym.CHAR); }
 	"integer"		{ return symbol("integer", sym.INTEGER); }
+	"string"		{ return symbol("string", sym.STRING); }
 
 	{letter}		{ return symbol("charconst", sym.CHAR_CONS, yytext()); }
 	{integer}		{ return symbol("integerconst", sym.INT_CONST, yytext()); }

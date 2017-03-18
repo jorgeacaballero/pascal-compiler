@@ -5,681 +5,665 @@ import java.io.FileReader;
 
 parser code {:
 
-    /* Reporte de error encontrado. */
-    public void report_error(String message, Object info) {
-        StringBuilder m = new StringBuilder("Sintax Error");
-        if (info instanceof java_cup.runtime.Symbol) {
-            java_cup.runtime.Symbol s = ((java_cup.runtime.Symbol) info);
-            if (s.left >= 0) {
-                m.append(" at line "+(s.left+1));
-                if (s.right >= 0)
-                    m.append(", column "+(s.right+1));
-            }
-        }
-        m.append(" : "+message);
-        System.err.println(m);
-    }
+	/* Reporte de error encontrado. */
+	public void report_error(String message, Object info) {
+		StringBuilder m = new StringBuilder("Sintax Error");
+		if (info instanceof java_cup.runtime.Symbol) {
+			java_cup.runtime.Symbol s = ((java_cup.runtime.Symbol) info);
+			if (s.left >= 0) {
+				m.append(" at line "+(s.left+1));
+				if (s.right >= 0)
+					m.append(", column "+(s.right+1));
+			}
+		}
+		m.append(" : "+message);
+		System.err.println(m);
+	}
 
-    /* Cuando se encuentra un error de donde el sistema no puede
-        recuperarse, se lanza un error fatal. Se despliega el mensaje
-        de error y se finaliza la ejecucion. */
-    public void report_fatal_error(String message, Object info) {
-        report_error(message, info);
-        System.exit(1);
-    }
+	/* Cuando se encuentra un error de donde el sistema no puede
+		recuperarse, se lanza un error fatal. Se despliega el mensaje
+		de error y se finaliza la ejecucion. */
+	public void report_fatal_error(String message, Object info) {
+		report_error(message, info);
+		System.exit(1);
+	}
 
-    /* Metodo main para garantizar la ejecucion del analizador
-       lexico y sintactico, ademas que se pase como parametro la tabla
-       de simbolos correspondiente. */
-    public static void main(String[] args){
-        try {
-            AnalizadorSintactico asin = new AnalizadorSintactico(
-                    new Lexer( new FileReader(args[0])));
-            Object result = asin.parse().value;
-            System.out.println("\n*** Resultados finales ***");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
+	/* Metodo main para garantizar la ejecucion del analizador
+	   lexico y sintactico, ademas que se pase como parametro la tabla
+	   de simbolos correspondiente. */
+	public static void main(String[] args){
+		try {
+			AnalizadorSintactico asin = new AnalizadorSintactico(
+					new Lexer( new FileReader(args[0])));
+			Object result = asin.parse().value;
+			System.out.println("\n*** Resultados finales ***");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 :};
 
 
 terminal  PROGRAM, BEGIN, WRITE_LN, END, AND, ARRAY, CONST, DIV, DO, ELSE,
-          FOR, FUNCTION, IF, NIL, NOT, OF, OR, PROCEDURE, RECORD, THEN, TO,
-          TYPE, VAR, WHILE, LEFT_PAR, RIGHT_PAR, LEFT_BRACKET, RIGHT_BRACKET,
-          LEFT_KEY, RIGHT_KEY, SEMICOLON, COLON, COMA, DOT, ASIGN, PLUS, MINUS,
-          DEVIDE, PRODUCT, MOD, EQUALS, NOT_EQUAL, GREATER_THAN, LESS_THAN,
-          GREATER_EQUALS, LESS_EQUAL, BOOLEAN, TRUE, FALSE, CHAR, INTEGER,
-          CHAR_CONS, INT_CONST, ID;
+		  FOR, FUNCTION, IF, NIL, NOT, OF, OR, PROCEDURE, RECORD, THEN, TO, DOWNTO,
+		  TYPE, VAR, WHILE, LEFT_PAR, RIGHT_PAR, LEFT_BRACKET, RIGHT_BRACKET,
+		  LEFT_KEY, RIGHT_KEY, SEMICOLON, COLON, COMMA, DOT, ASIGN, PLUS, MINUS,
+		  DEVIDE, PRODUCT, XOR, MOD, EQUALS, NOT_EQUAL, GREATER_THAN, LESS_THAN,
+		  GREATER_EQUALS, LESS_EQUAL, BOOLEAN, TRUE, FALSE, CHAR, INTEGER,
+		  CHAR_CONS, INT_CONST, ID, IN, STRING, SET, FILE, ;
 
-terminal Integer ENTERO;
 
-/* No terminales usados en la seccion gramatical.
-
-   Primero se lista los no terminales que tienen un valor Object y despues
-   se lista los no terminales que tienen un entero. Un Object se refiere a que
-   no tienen tipo, pudiendo ser entero o String. */
-non terminal Object     expr_list, expr_part;
-non terminal Integer    expr, factor, termino;
 non terminal pascalProgram, programHeading, identifierList, block, labelDeclaration,
-             constantDeclaration, typeDeclaration, variableDeclaration, variableidList,
-             constant, TYPE, simpleType, structuredType, indexList, fieldList, fixedPart,
-             recordField, fieldidList, variantPart, tagField, variantList, variant,
-             caseLabelList, procAndFuncDeclaration, procOrFunc, blockOrForward, parameters,
-             formalParameterList, formalParameterSection, parameteridList, statementList,
-             statement, variable, subscriptList, caseList, forList, expressionList, label,
-             recordVariableList, expression, relationalOp, additiveExpression, additiveOp,
-             multiplicativeExpression, multiplicativeOp, unaryExpression, unaryOp,
-             primaryExpression, elementList, element, constid, typeid, funcid, procid,
-             fieldid, varid, empty;
-
-
-/* -------------Seccion de predencia y asociacion de los terminales----------- */
-
-/*
-  Precedencia de los no terminales, no sirve con simbolos terminales.
-  Por eso no la usamos. Además indica si se asocia a izquierda o derecha.
-*/
-  /*precedence left OP_SUMA, OP_RESTA;
-  precedence left OP_MULT;*/
-
-
-/* ------------------- Seccion de la gramatica ------------------------ */
-
-/* La gramatica de nuestro analizador.
-
-   expr_list ::=   expr_list expr_part
-                 | expr_part
-   expr_part ::=   expr SEMI
-   expr      ::=   expr PLUS factor
-                 | expr MINUS factor
-                 | factor
-   factor    ::=   factor TIMES term
-                 | factor DIVIDE term
-                 | term
-   term     ::=    LPAREN expr RPAREN
-                 | NUMBER
-                 | ID
-*/
-
-/* 'expr_list' es la raiz de la gramatica. Una 'expr_list' puede ser una 'expr_list'
-   seguida de una expr_part, o puede ser una expr_part.
-   Un terminal o no terminal se define <termino> ::= termino1 termino2 ... terminoN.;
-   donde termino puede ser terminal o no terminal, solo se permite un simbolo a la
-   izquierda. La | sirve para indicar que es una produccion u otra.
-   Debemos pasar de simbolos no terminales a simbolos terminales. Una gramatica que no
-   termina en simbolos terminales se dice que no reduce, y por lo tanto nunca se finaliza
-   su procesado.
-*/
-
-    expr_list ::= expr_list expr_part
-                  |
-                  expr_part
-                  ;
-
-    pascalProgram::= 
-       PROGRAM ID programHeading SEMICOLON block DOT {:
-            :};
-
-
-    programHeading::=  
-       LEFT_PAR identifierList RIGHT_PAR{:
-            :};
-
-
-    identifierList::= 
-       ID  {:
-            :}
-            |
-       identifierList COMMA ID  {:
-            :};
-
-
-    block::=  
-       block {:
-            :}
-            | 
-       labelDeclaration SEMICOLON block  {:
-            :}
-            |
-       constantDeclaration SEMICOLON block {:
-            :}
-            |
-       typeDeclaration SEMICOLON block {:
-            :}
-            |
-       variableDeclaration SEMICOLON block  {:
-            :}
-            |
-       variableDeclaration SEMICOLON block  {:
-            :}
-            |
-       procAndFuncDeclaration SEMICOLON block  {:
-            :}
-            |
-       BEGIN statementList END  {:
-            :}
-            ;
-
-
-    labelDeclaration::=  
-       label unsignedInteger  {:
-            :}
-            |
-       labelDeclaration COMMA unsignedInteger  {:
-            :};
-
-
-    constantDeclaration::=  
-       CONST  ID EQUALS constant  {:
-            :}
-            |
-       constantDeclaration SEMICOLON  ID EQUALS constant  {:
-            :};
-
-
-    typeDeclaration::=  
-       TYPE  ID EQUALS TYPE  {:
-            :}
-            |
-       typeDeclaration SEMICOLON  ID EQUALS TYPE  {:
-            :};
-
-
-    variableDeclaration::=  
-       VAR variableidList COLON TYPE  {:
-            :}
-            |
-       variableDeclaration SEMICOLON variableidList COLON TYPE  {:
-            :};
-
-
-    variableidList::=  
-       ID  {:
-            :}
-            |
-       variableidList COMMA  ID  {:
-            :};
-
-    constant::=  
-       INTEGER {:
-            :}
-            | 
-       real {:
-            :}
-            |
-       STRING{:
-            :}
-            |
-       constid  {:
-            :}
-            ;
-
-
-    TYPE::=  
-       simpleType  {:
-            :}
-            |
-       structuredType  {:
-            :}
-            |
-       ^ typeid  {:
-            :};
-
-
-    simpleType::=  
-       LEFT_PAR  identifierList RIGHT_PAR  {:
-            :}
-            |
-     /*  constant ... constant  {:
-            :}
-            | */
-       typeid {:
-            :}  ;
-
-
-    structuredType::=  
-       ARRAY LEFT_BRACKET indexList RIGHT_BRACKET OF TYPE  {:
-            :} 
-            |
-       record fieldList END  {:
-            :} 
-            |
-       set OF simpleType  {:
-            :} 
-            |
-       file OF TYPE  {:
-            :} 
-            |
-       packed structuredType  {:
-            :} ;
-
-
-    indexList::=  
-       simpleType  {:
-            :} 
-            |
-       indexList COMMA simpleType  {:
-            :} ;
-
-
-    fieldList::=  
-       fixedPart  {:
-            :} 
-            |
-       fixedPart SEMICOLON variantPart {:
-            :} 
-            |
-       variantPart {:
-            :} ;
-
-
-    fixedPart::=  
-       recordField {:
-            :} 
-            |
-       fixedPart SEMICOLON recordField {:
-            :} ;
-
-
-    recordField::= 
-       empty {:
-            :} 
-            |
-       fieldidList COLON TYPE   {:
-            :} 
-            ;
-
-
-    fieldidList::=  
-       ID  {:
-            :} 
-            |
-       fieldidList COMMA  ID  {:
-            :} 
-            ;
-
-
-    variantPart::= 
-       case tagField OF variantList {:
-            :} 
-            ;
-
-
-    tagField::= 
-       typeid  {:
-            :} 
-            |
-       ID COLON typeid  {:
-            :} 
-            ;
-
-
-    variantList::=  
-       variant {:
-            :} 
-            |
-       variantList SEMICOLON variant {:
-            :} 
-            ;
-
-
-    variant::= 
-       empty {:
-            :} 
-            |
-       caseLabelList COLON LEFT_PAR fieldList RIGHT_PAR  {:
-            :} 
-            ;
-
-
-    caseLabelList::=  
-       constant  {:
-            :} 
-            |
-       caseLabelList COMMA constant  {:
-            :} 
-            ;
-
-
-    procAndFuncDeclaration::=  
-       procOrFunc  {:
-            :} 
-            |
-       procAndFuncDeclaration SEMICOLON procOrFunc {:
-            :} 
-            ;
-
-
-    procOrFunc::=  
-       PROCEDURE  ID parameters SEMICOLON  blockOrForward {:
-            :} 
-            |
-       function  ID parameters COLON typeid SEMICOLON blockOrForward {:
-            :} 
-            ;
-
-
-    blockOrForward::=  
-       block{:
-            :} 
-            |  
-       forward  {:
-            :} 
-            ;
-
-
-    parameters::=  
-       LEFT_PAR formalParameterList RIGHT_PAR{:
-            :} 
-            ;
-
-
-    formalParameterList::=  
-       formalParameterSection  {:
-            :} 
-            |
-       formalParameterList SEMICOLON formalParameterSection  {:
-            :} 
-            ;
-
-
-    formalParameterSection::=  
-       parameteridList COLON typeid {:
-            :} 
-            |
-       VAR parameteridList COLON typeid  {:
-            :} 
-            |
-       PROCEDURE ID parameters {:
-            :} 
-            |
-       function ID parameters COLON typeid {:
-            :} 
-            ;
-
-
-    parameteridList::=  
-       ID  {:
-            :} 
-            |
-       parameteridList COMMA ID  {:
-            :} 
-            ;
-
-
-    statementList::=  
-       statement  {:
-            :} 
-            |
-       statementList SEMICOLON statement  {:
-            :} 
-            ;
-
-
-    statement::=  
-       empty  {:
-            :} 
-            |
-       variable := expression  {:
-            :} 
-            |
-       BEGIN statementList END  {:
-            :} 
-            |
-       if expression then statement {:
-            :} 
-            |
-       if expression then statement else statement  {:
-            :} 
-            |
-       case expression OF caseList END  {:
-            :} 
-            |
-       while expression DO statement  {:
-            :} 
-            |
-       repeat statementList until expression {:
-            :} 
-            | 
-       FOR varid := forList DO statement  {:
-            :} 
-            |
-       procid  {:
-            :} 
-            |
-       procid LEFT_PAR expressionList RIGHT_PAR{:
-            :} 
-            |
-       goto label {:
-            :} 
-            |
-       with recordVariableList DO statement  {:
-            :} 
-            |
-       label COLON statement  {:
-            :} 
-            ;
-
-
-    variable::=  
-       ID  {:
-            :} 
-            |
-       variable LEFT_BRACKET subscriptList RIGHT_BRACKET  {:
-            :} 
-            |
-       variable DOT fieldid  {:
-            :} 
-            |
-       variable ^  {:
-            :} 
-            ;
-
-
-    subscriptList::=  
-       expression  {:
-            :} 
-            |
-       subscriptList COMMA expression  {:
-            :} 
-            ;
-
-
-    caseList::=  
-       caseLabelList COLON statement  {:
-            :} 
-            |
-       caseList SEMICOLON caseLabelList COLON statement  {:
-            :} 
-            ;
-
-
-    forList::=  
-       expression to expression  {:
-            :} 
-            |
-       expression downto expression  {:
-            :} 
-            ;
-
-
-    expressionList::=  
-       expression  {:
-            :} 
-            |
-       expressionList COMMA expression  {:
-            :} 
-            ;
-
-
-    label::=  
-       unsignedInteger{:
-            :} 
-            ;
-
-
-    recordVariableList::=  
-       variable  {:
-            :} 
-            |
-       recordVariableList COMMA variable  {:
-            :} 
-            ;
-
-
-    expression::= 
-       expression relationalOp additiveExpression {:
-            :} 
-            |
-       additiveExpression  {:
-            :} 
-            ;
-
-
-    relationalOp::= one OF {:
-            :} 
-            |
-       LESS_THAN LESS_EQUAL EQUALS NOT_EQUAL GREATER_EQUALS GREATER_THAN {:
-            :} 
-            ;
-     
-
-    additiveExpression::= 
-       additiveExpression additiveOp multiplicativeExpression {:
-            :} 
-            |
-       multiplicativeExpression  {:
-            :} 
-            ;
-
-
-    additiveOp::= one OF {:
-            :} 
-            |
-       PLUS  MINUS  OR {:
-            :} 
-            ;
-
-
-    multiplicativeExpression::= 
-       multiplicativeExpression multiplicativeOp unaryExpression {:
-            :} 
-            |
-       unaryExpression  {:
-            :} 
-            ;
-
-
-    multiplicativeOp::= one OF {:
-            :} 
-            |
-       PRODUCT  DIVIDE DIV MOD  AND  in {:
-            :} 
-            ;
-
-
-    unaryExpression::= 
-       unaryOp unaryExpression  {:
-            :} 
-            |
-       primaryExpression  {:
-            :} 
-            ;
-
-
-    unaryOp::=  one OF {:
-            :} 
-            |
-       PLUS  MINUS  not {:
-            :} 
-            ;
-
-
-    primaryExpression::=  
-       variable  {:
-            :} 
-            |
-       unsignedInteger  {:
-            :} 
-            |
-       unsignedReal  {:
-            :} 
-            |
-       STRING  {:
-            :} 
-            |
-       NIL  {:
-            :} 
-            |
-       funcid LEFT_PAR expressionList RIGHT_PAR {:
-            :} 
-            |
-       LEFT_BRACKET elementList RIGHT_BRACKET {:
-            :} 
-            |
-       LEFT_PAR expression RIGHT_PAR  {:
-            :} 
-            ;
-
-
-    elementList::=  
-       empty  {:
-            :} 
-            |
-       element  {:
-            :} 
-            |
-       elementList COMMA element  {:
-            :} 
-            ;
-
-
-    element::=  
-       expression  {:
-            :} 
-            |
-       element expression  {:
-            :} 
-            ;
-
-
-    constid::=  
-       ID  {:
-            :} 
-            ;
-
-
-    typeid::=  
-       ID  {:
-            :} 
-            ;
-
-
-    funcid::= 
-       ID  {:
-            :} 
-            ;
-
-
-    procid::=  
-       ID  {:
-            :} 
-            ;
-
-
-    fieldid::=  
-       ID   {:
-            :} 
-            ;
-
-      
-    varid::= 
-       ID  {:
-            :} 
-            ;
-
-
-    empty::= {:
-            :} 
-            ;
+			 constantDeclaration, typeDeclaration, variableDeclaration, variableidList,
+			 constant, type, simpleType, structuredType, indexList, fieldList, fixedPart,
+			 recordField, fieldidList, variantPart, tagField, variantList, variant,
+			 caseLabelList, procAndFuncDeclaration, procOrFunc, blockOrForward, parameters,
+			 formalParameterList, formalParameterSection, parameteridList, statementList,
+			 statement, variable, subscriptList, caseList, forList, expressionList, label,
+			 recordVariableList, expression, relationalOp, additiveExpression, additiveOp,
+			 multiplicativeExpression, multiplicativeOp, unaryExpression, unaryOp,
+			 primaryExpression, elementList, element, constid, typeid, funcid, procid,
+			 fieldid, varid, empty;
+
+start with pascalProgram;
+
+
+pascalProgram::=
+								PROGRAM ID programHeading SEMICOLON block DOT {:
+									  :}
+							;
+
+
+programHeading::=
+								LEFT_PAR identifierList RIGHT_PAR{:
+									  :}
+							;
+
+
+identifierList::=
+								ID  {:
+									  :}
+							|
+								identifierList COMMA ID  {:
+									  :}
+							;
+
+
+block::=
+								block {:
+									  :}
+							|
+								labelDeclaration SEMICOLON block  {:
+									  :}
+							|
+								constantDeclaration SEMICOLON block {:
+									  :}
+							|
+								typeDeclaration SEMICOLON block {:
+									  :}
+							|
+								variableDeclaration SEMICOLON block  {:
+									  :}
+							|
+								procAndFuncDeclaration SEMICOLON block  {:
+									  :}
+							|
+								BEGIN statementList END  {:
+									  :}
+							;
+
+
+labelDeclaration::=
+								label INTEGER  {:
+									:}
+							|
+								labelDeclaration COMMA INTEGER  {:
+									:}
+							;
+
+
+constantDeclaration::=
+							   CONST  ID EQUALS constant  {:
+									:}
+							|
+							   constantDeclaration SEMICOLON  ID EQUALS constant  {:
+									:}
+							;
+
+
+typeDeclaration::=
+							   type  ID EQUALS type  {:
+									:}
+							|
+							   typeDeclaration SEMICOLON  ID EQUALS type  {:
+									:}
+							;
+
+
+variableDeclaration::=
+							   VAR variableidList COLON type  {:
+									:}
+							|
+							   variableDeclaration SEMICOLON variableidList COLON type  {:
+									:}
+							;
+
+
+variableidList::=
+							   ID  {:
+									:}
+							|
+							   variableidList COMMA  ID  {:
+									:}
+							;
+
+constant::=
+								INTEGER {:
+									:}
+							|
+								STRING{:
+									:}
+							|
+								constid  {:
+									:}
+							;
+
+
+type::=
+								simpleType  {:
+									:}
+							|
+								structuredType  {:
+									:}
+							|
+								XOR typeid  {:
+									:}
+							;
+
+
+simpleType::=
+							   LEFT_PAR  identifierList RIGHT_PAR  {:
+									:}
+							|
+							 /*  constant ... constant  {:
+									:}
+									| */
+							   typeid {:
+									:}
+							;
+
+
+structuredType::=
+								ARRAY LEFT_BRACKET indexList RIGHT_BRACKET OF type  {:
+									:}
+							|
+								RECORD fieldList END  {:
+									:}
+							|
+								SET OF simpleType  {:
+									:}
+							|
+								FILE OF type  {:
+									:}
+							|
+								PACKED structuredType  {:
+									:}
+							;
+
+
+indexList::=
+								simpleType  {:
+									:}
+							|
+								indexList COMMA simpleType  {:
+									:}
+							;
+
+
+fieldList::=
+								fixedPart  {:
+									:}
+							|
+								fixedPart SEMICOLON variantPart {:
+									:}
+							|
+								variantPart {:
+									:}
+							;
+
+
+fixedPart::=
+								recordField {:
+									:}
+							|
+								fixedPart SEMICOLON recordField {:
+									:}
+							;
+
+
+recordField::=
+								empty {:
+									:}
+							|
+								fieldidList COLON type   {:
+									:}
+							;
+
+
+fieldidList::=
+								ID  {:
+									:}
+							|
+								fieldidList COMMA  ID  {:
+									:}
+							;
+
+
+variantPart::=
+								case tagField OF variantList {:
+									:}
+							;
+
+
+tagField::=
+								typeid  {:
+									:}
+							|
+								ID COLON typeid  {:
+									:}
+							;
+
+
+variantList::=
+								variant {:
+									:}
+							|
+								variantList SEMICOLON variant {:
+									:}
+							;
+
+
+variant::=
+								empty {:
+									:}
+							|
+								caseLabelList COLON LEFT_PAR fieldList RIGHT_PAR  {:
+									:}
+							;
+
+
+caseLabelList::=
+								constant  {:
+									:}
+							|
+								caseLabelList COMMA constant  {:
+									:}
+							;
+
+
+procAndFuncDeclaration::=
+								procOrFunc  {:
+									:}
+							|
+								procAndFuncDeclaration SEMICOLON procOrFunc {:
+									:}
+							;
+
+
+procOrFunc::=
+								PROCEDURE  ID parameters SEMICOLON  blockOrForward {:
+									:}
+							|
+								function  ID parameters COLON typeid SEMICOLON blockOrForward {:
+									:}
+							;
+
+
+blockOrForward::=
+								block{:
+									:}
+							|
+								forward  {:
+									:}
+							;
+
+
+parameters::=
+								LEFT_PAR formalParameterList RIGHT_PAR{:
+									:}
+							;
+
+
+formalParameterList::=
+								formalParameterSection  {:
+									:}
+							|
+								formalParameterList SEMICOLON formalParameterSection  {:
+									:}
+							;
+
+
+formalParameterSection::=
+								parameteridList COLON typeid {:
+									:}
+							|
+								VAR parameteridList COLON typeid  {:
+									:}
+							|
+								PROCEDURE ID parameters {:
+									:}
+							|
+								function ID parameters COLON typeid {:
+									:}
+							;
+
+
+parameteridList::=
+								ID  {:
+									:}
+							|
+								parameteridList COMMA ID  {:
+									:}
+							;
+
+
+statementList::=
+								statement  {:
+										:}
+							|
+								statementList SEMICOLON statement  {:
+									:}
+							;
+
+
+statement::=
+								empty  {:
+									:}
+							|
+								variable ASIGN expression  {:
+									:}
+							|
+								BEGIN statementList END  {:
+									:}
+							|
+								IF expression then statement {:
+									:}
+							|
+								IF expression then statement else statement  {:
+									:}
+							|
+								WHILE expression DO statement  {:
+									:}
+							|
+								REPEAT statementList until expression {:
+									:}
+							|
+								FOR varid ASIGN forList DO statement  {:
+									:}
+							|
+								procid  {:
+									:}
+							|
+								procid LEFT_PAR expressionList RIGHT_PAR{:
+									:}
+							|
+								label COLON statement  {:
+									:}
+							;
+
+
+variable::=
+								ID  {:
+									:}
+							|
+								variable LEFT_BRACKET subscriptList RIGHT_BRACKET  {:
+									:}
+							|
+								variable DOT fieldid  {:
+									:}
+							|
+								variable XOR  {:
+									:}
+							;
+
+
+subscriptList::=
+								expression  {:
+									:}
+							|
+								subscriptList COMMA expression  {:
+									:}
+							;
+
+
+caseList::=
+								caseLabelList COLON statement  {:
+									:}
+							|
+								caseList SEMICOLON caseLabelList COLON statement  {:
+									:}
+							;
+
+
+forList::=
+								expression TO expression  {:
+									:}
+							|
+								expression DOWNTO expression  {:
+									:}
+							;
+
+
+expressionList::=
+								expression  {:
+									:}
+							|
+								expressionList COMMA expression  {:
+									:}
+							;
+
+
+label::=
+								INTEGER{:
+									:}
+							;
+
+
+recordVariableList::=
+								variable  {:
+									:}
+							|
+								recordVariableList COMMA variable  {:
+									:}
+							;
+
+
+expression::=
+								expression relationalOp additiveExpression {:
+									:}
+							|
+								additiveExpression  {:
+									:}
+							;
+
+
+relationalOp::=
+								LESS_THAN  {:
+									:}
+							|
+								LESS_EQUAL {:
+									:}
+							|
+								EQUALS {:
+									:}
+							|
+								NOT_EQUAL {:
+									:}
+							|
+								GREATER_EQUALS {:
+									:}
+							|
+								GREATER_THAN {:
+										:}
+							;
+
+
+additiveExpression::=
+								additiveExpression additiveOp multiplicativeExpression {:
+									:}
+							|
+								multiplicativeExpression  {:
+									:}
+							;
+
+
+additiveOp::=
+								PLUS {:
+									:}
+						   |
+								MINUS {:
+									:}
+						   |
+								OR {:
+									:}
+							;
+
+
+multiplicativeExpression::=
+								multiplicativeExpression multiplicativeOp unaryExpression {:
+									:}
+							|
+								unaryExpression  {:
+									:}
+							;
+
+
+multiplicativeOp::=
+								PRODUCT {:
+									:}
+							|
+								DIVIDE {:
+									:}
+							|
+								DIV  {:
+									:}
+							|
+								MOD {:
+									:}
+							|
+								AND
+							|
+								IN {: //putos no se les olvide meter esta mierda en el cup ***************************************************
+									:}
+							;
+
+
+unaryExpression::=
+								unaryOp unaryExpression  {:
+									:}
+							|
+								primaryExpression  {:
+									:}
+							;
+
+
+unaryOp::=
+								PLUS {:
+									:}
+							|
+								MINUS {:
+									:}
+							|
+								NOT {:
+									:}
+							;
+
+
+primaryExpression::=
+								variable  {:
+									:}
+							|
+								INTEGER  {:
+									:}
+							|
+								unsignedReal  {:
+									:}
+							|
+								STRING  {:
+									:}
+							|
+								NIL  {:
+									:}
+							|
+								funcid LEFT_PAR expressionList RIGHT_PAR {:
+									:}
+							|
+								LEFT_BRACKET elementList RIGHT_BRACKET {:
+									:}
+							|
+								LEFT_PAR expression RIGHT_PAR  {:
+									:}
+							;
+
+
+elementList::=
+								empty  {:
+									:}
+							|
+								element  {:
+									:}
+							|
+								elementList COMMA element  {:
+									:}
+							;
+
+
+element::=
+								expression  {:
+									:}
+							|
+								element expression  {:
+									:}
+							;
+
+
+constid::=
+								ID  {:
+									:}
+							;
+
+
+typeid::=
+								ID  {:
+									:}
+							;
+
+
+funcid::=
+								ID  {:
+									:}
+							;
+
+
+procid::=
+								ID  {:
+									:}
+							;
+
+
+fieldid::=
+								ID   {:
+									:}
+							;
+
+
+varid::=
+								ID  {:
+									:}
+							;
+
+
+empty::=
+								{:
+								:}
+							;
