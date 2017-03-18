@@ -12,6 +12,7 @@ PROGRAM Sort(input, output);
 
         { Array of ints }
         arr: IntArrType;
+        { Multi linea bitch }
 
     { Read in the integers. }
     PROCEDURE ReadArr(VAR size: Integer; VAR a: IntArrType);

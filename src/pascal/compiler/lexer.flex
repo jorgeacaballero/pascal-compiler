@@ -30,7 +30,7 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
 	}
 
 	private void error(String message) {
-		System.err.println("Error at line "+(yyline+1)+", column "+(yycolumn+1)+" : "+message);
+		System.err.println("Lexical Error at line "+(yyline+1)+", column "+(yycolumn+1)+" : "+message);
 	}
 %}
 
@@ -86,7 +86,8 @@ comment = \{.*\}
 	"-"				{ return symbol("-", sym.MINUS); }
 	"/"				{ return symbol("/", sym.DEVIDE); }
 	"*"				{ return symbol("*", sym.PRODUCT); }
-	"%"				{ return symbol("%", sym.MOD); }
+	"mod"			{ return symbol("mod", sym.MOD); }
+	"div"			{ return symbol("div", sym.DIV); }
 	"="				{ return symbol("=", sym.EQUALS); }
 	"<>"			{ return symbol("<>", sym.NOT_EQUAL); }
 	">"				{ return symbol(">", sym.GREATER_THAN); }

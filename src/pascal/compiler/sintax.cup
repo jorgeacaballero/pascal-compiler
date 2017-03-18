@@ -7,7 +7,7 @@ parser code {:
 
     /* Reporte de error encontrado. */
     public void report_error(String message, Object info) {
-        StringBuilder m = new StringBuilder("Error");
+        StringBuilder m = new StringBuilder("Sintax Error");
         if (info instanceof java_cup.runtime.Symbol) {
             java_cup.runtime.Symbol s = ((java_cup.runtime.Symbol) info);
             if (s.left >= 0) {
@@ -50,9 +50,9 @@ terminal  PROGRAM, BEGIN, WRITE_LN, END, AND, ARRAY, CONST, DIV, DO, ELSE,
           LEFT_KEY, RIGHT_KEY, SEMICOLON, COLON, COMA, DOT, ASIGN, PLUS, MINUS,
           DEVIDE, PRODUCT, MOD, EQUALS, NOT_EQUAL, GREATER_THAN, LESS_THAN,
           GREATER_EQUALS, LESS_EQUAL, BOOLEAN, TRUE, FALSE, CHAR, INTEGER,
-          CHAR_CONS, INT_CONST, ID;
+          CHAR_CONS, INT_CONST, ID, DIV, MOD;
 
-terminal Integer   	ENTERO;
+terminal Integer ENTERO;
 
 /* No terminales usados en la seccion gramatical.
 
