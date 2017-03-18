@@ -95,7 +95,7 @@ public class AnalizadorSintactico extends java_cup.runtime.lr_parser {
 
     /* Reporte de error encontrado. */
     public void report_error(String message, Object info) {
-        StringBuilder m = new StringBuilder("Error");
+        StringBuilder m = new StringBuilder("Sintax Error");
         if (info instanceof java_cup.runtime.Symbol) {
             java_cup.runtime.Symbol s = ((java_cup.runtime.Symbol) info);
             if (s.left >= 0) {

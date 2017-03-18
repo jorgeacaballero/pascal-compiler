@@ -87,7 +87,6 @@ comment = \{.*\}
 	"/"				{ return symbol("/", sym.DEVIDE); }
 	"*"				{ return symbol("*", sym.PRODUCT); }
 	"mod"			{ return symbol("mod", sym.MOD); }
-	"div"			{ return symbol("div", sym.DIV); }
 	"="				{ return symbol("=", sym.EQUALS); }
 	"<>"			{ return symbol("<>", sym.NOT_EQUAL); }
 	">"				{ return symbol(">", sym.GREATER_THAN); }
