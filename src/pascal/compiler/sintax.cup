@@ -45,14 +45,17 @@ parser code {:
 :};
 
 
-terminal  PROGRAM, BEGIN, WRITE_LN, END, AND, ARRAY, CONST, DIV, DO, ELSE,
+terminal  PROGRAM, BEGIN, END, AND, ARRAY, CONST, DIV, DO, ELSE,
 		  FOR, FUNCTION, IF, NIL, NOT, OF, OR, PROCEDURE, RECORD, THEN, TO, DOWNTO,
-		  TYPE, VAR, WHILE, LEFT_PAR, RIGHT_PAR, LEFT_BRACKET, RIGHT_BRACKET,
-		  LEFT_KEY, RIGHT_KEY, SEMICOLON, COLON, COMMA, DOT, ASIGN, PLUS, MINUS,
+		  VAR, WHILE, LEFT_PAR, RIGHT_PAR, LEFT_BRACKET, RIGHT_BRACKET,
+		  SEMICOLON, COLON, COMMA, DOT, ASIGN, PLUS, MINUS,
 		  DIVIDE, PRODUCT, XOR, MOD, EQUALS, NOT_EQUAL, GREATER_THAN, LESS_THAN,
-		  GREATER_EQUALS, LESS_EQUAL, BOOLEAN, TRUE, FALSE, CHAR, INTEGER,
-		  CHAR_CONS, INT_CONST, ID, IN, STRING, SET, FILE, PACKED, CASE, FORWARD, REPEAT,
+		  GREATER_EQUALS, LESS_EQUAL, INTEGER,
+		  ID, IN, STRING, SET, FILE, PACKED, CASE, FORWARD, REPEAT,
 		  UNTIL;
+
+
+//terminal CHAR, LEFT_KEY, TYPE, WRITE_LN, BOOLEAN, INT_CONST, TRUE, FALSE, CHAR_CONS, RIGHT_KEY
 
 
 non terminal pascalProgram, programHeading, identifierList, block, labelDeclaration,
@@ -64,7 +67,7 @@ non terminal pascalProgram, programHeading, identifierList, block, labelDeclarat
 			 statement, variable, subscriptList, caseList, forList, expressionList, label,
 			 recordVariableList, expression, relationalOp, additiveExpression, additiveOp,
 			 multiplicativeExpression, multiplicativeOp, unaryExpression, unaryOp,
-			 primaryExpression, elementList, element, constid, typeid, funcid, procid,
+			 primaryExpression, elementList, element, constid, typeid, procid,
 			 fieldid, varid, empty, block1, block2, block3, block4, block5;
 
 precedence left OR ;
@@ -74,6 +77,7 @@ precedence left PLUS, MINUS ;
 precedence left PRODUCT, DIVIDE ;
 precedence nonassoc NOT ;
 precedence left DOT, LEFT_BRACKET, RIGHT_BRACKET ;
+precedence right ELSE;
 
 start with pascalProgram;
 
@@ -410,22 +414,10 @@ statementList::=
 
 
 statement::=
-								empty  {:
-									:}
-							|
-								variable ASIGN expression  {:
-									:}
-							|
-								BEGIN statementList END  {:
-									:}
-							|
-								IF expression THEN statement {:
-									:}
-							|
 								IF expression THEN statement ELSE statement  {:
 									:}
 							|
-								WHILE expression DO statement  {:
+								procid LEFT_PAR expressionList RIGHT_PAR{:
 									:}
 							|
 								REPEAT statementList UNTIL expression {:
@@ -434,13 +426,25 @@ statement::=
 								FOR varid ASIGN forList DO statement  {:
 									:}
 							|
-								procid  {:
+								WHILE expression DO statement  {:
 									:}
 							|
-								procid LEFT_PAR expressionList RIGHT_PAR{:
+								IF expression THEN statement {:
+									:}
+							|
+								variable ASIGN expression  {:
+									:}
+							|
+								BEGIN statementList END  {:
 									:}
 							|
 								label COLON statement  {:
+									:}
+							|
+								procid  {:
+									:}
+							|
+								empty  {:
 									:}
 							;
 
@@ -625,7 +629,7 @@ primaryExpression::=
 								NIL  {:
 									:}
 							|
-								funcid LEFT_PAR expressionList RIGHT_PAR {:
+								typeid LEFT_PAR expressionList RIGHT_PAR {:
 									:}
 							|
 								LEFT_BRACKET elementList RIGHT_BRACKET {:
@@ -664,12 +668,6 @@ constid::=
 
 
 typeid::=
-								ID  {:
-									:}
-							;
-
-
-funcid::=
 								ID  {:
 									:}
 							;
