@@ -3,6 +3,29 @@ PROGRAM Sort(input, output);
             Multi
             Line
         }
+    CONST
+        { Max array size. }
+        MaxElts = 50;
+    TYPE
+        { Type of the element array. }
+        IntArrType = ARRAY [1..MaxElts] OF Integer;
+    VAR
+        { Indexes, exchange temp, array size. }
+        i, j, tmp, size: integer;
+
+        { Array of ints }
+        arr: IntArrType;
+
+    { Read in the integers. }
+    PROCEDURE ReadArr(VAR size: Integer; VAR a: IntArrType);
+        BEGIN
+            size := 1;
+            WHILE NOT eof DO BEGIN
+                readln(a[size]);
+                IF NOT eof THEN
+                    size := size + 1
+            END
+        END;
 
     BEGIN
         { Read }

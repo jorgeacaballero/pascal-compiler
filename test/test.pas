@@ -2,7 +2,8 @@ Program Lesson1_Program3(hello);
 {one line}
 Var
     {
-    multi line
+    multi
+    line
     }
     Num1, Num2, Sum : Integer;
 

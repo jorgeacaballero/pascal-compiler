@@ -184,17 +184,13 @@ typeDeclaration::=
 
 
 variableDeclaration::=
-							   VAR variableidList COLON type  {:
+							   VAR variableidList COLON type {:
+
 									:}
 							|
 							   variableDeclaration SEMICOLON variableidList COLON type  {:
 									:}
-							|
-								VAR variableidList COLON error {:
-									System.out.println("variableDeclaration error");
-									:}
 							;
-
 
 variableidList::=
 							   ID  {:
