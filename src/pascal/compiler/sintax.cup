@@ -65,7 +65,7 @@ non terminal pascalProgram, programHeading, identifierList, block, labelDeclarat
 			 recordVariableList, expression, relationalOp, additiveExpression, additiveOp,
 			 multiplicativeExpression, multiplicativeOp, unaryExpression, unaryOp,
 			 primaryExpression, elementList, element, constid, typeid, funcid, procid,
-			 fieldid, varid, empty;
+			 fieldid, varid, empty, block1, block2, block3, block4, block5;
 
 precedence left OR ;
 precedence left AND ;
@@ -100,26 +100,48 @@ identifierList::=
 							;
 
 
-block::=
-								block {:
+block::= 
+								labelDeclaration SEMICOLON block1  {:
+									  :}
+							| 
+								block1 {:
+									  :}	
+							;						
+
+block1::=
+								constantDeclaration SEMICOLON block2{:
 									  :}
 							|
-								labelDeclaration SEMICOLON block  {:
+								block2 {:
+									:}
+							;
+
+block2::=
+								typeDeclaration SEMICOLON block3{:
 									  :}
 							|
-								constantDeclaration SEMICOLON block {:
+								block3 {:
+									:}
+							;
+
+block3::=
+								variableDeclaration SEMICOLON block4{:
 									  :}
 							|
-								typeDeclaration SEMICOLON block {:
+								block4 {:
+									:}
+							;
+
+block4::=
+								procAndFuncDeclaration SEMICOLON block5{:
 									  :}
 							|
-								variableDeclaration SEMICOLON block  {:
-									  :}
-							|
-								procAndFuncDeclaration SEMICOLON block  {:
-									  :}
-							|
-								BEGIN statementList END  {:
+								block5 {:
+									:}
+							;
+
+block5::=
+								BEGIN statementList END{:
 									  :}
 							;
 
@@ -322,19 +344,19 @@ procAndFuncDeclaration::=
 
 
 procOrFunc::=
-								PROCEDURE ID parameters SEMICOLON  blockOrForward {:
+								PROCEDURE ID parameters blockOrForward {:
 									:}
 							|
-								FUNCTION ID parameters COLON typeid SEMICOLON blockOrForward {:
+								FUNCTION ID parameters COLON typeid blockOrForward {:
 									:}
 							;
 
 
 blockOrForward::=
-								block{:
+								SEMICOLON block{:
 									:}
 							|
-								FORWARD  {:
+								SEMICOLON FORWARD  {:
 									:}
 							;
 
