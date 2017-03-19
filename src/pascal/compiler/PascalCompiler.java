@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java_cup.runtime.*;
 import jflex.*;
+import pascal.ast.*;
 
 /**
  *

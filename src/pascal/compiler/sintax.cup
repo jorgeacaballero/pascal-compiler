@@ -2,6 +2,7 @@ package pascal.compiler;
 
 import java_cup.runtime.*;
 import java.io.FileReader;
+import pascal.ast.*;
 
 parser code {:
 
@@ -66,7 +67,16 @@ non terminal pascalProgram, programHeading, identifierList, block, labelDeclarat
 			 primaryExpression, elementList, element, constid, typeid, funcid, procid,
 			 fieldid, varid, empty;
 
+precedence left OR ;
+precedence left AND ;
+precedence nonassoc EQUALS, NOT_EQUAL, LESS_THAN, GREATER_THAN, LESS_EQUAL, GREATER_EQUALS ;
+precedence left PLUS, MINUS ;
+precedence left PRODUCT, DIVIDE ;
+precedence nonassoc NOT ;
+precedence left DOT, LEFT_BRACKET, RIGHT_BRACKET ;
+
 start with pascalProgram;
+
 
 
 pascalProgram::=
