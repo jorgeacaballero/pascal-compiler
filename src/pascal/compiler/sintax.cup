@@ -85,6 +85,7 @@ start with pascalProgram;
 
 pascalProgram::=
 								PROGRAM ID programHeading SEMICOLON block DOT {:
+									parser.root = "Hola"
 									  :}
 							;
 

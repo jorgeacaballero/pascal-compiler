@@ -5,17 +5,23 @@
  */
 package pascal.compiler;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java_cup.runtime.*;
 import jflex.*;
 import pascal.ast.*;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import java.io.Reader;
+import java_cup.parser;
 
 /**
  *
@@ -28,34 +34,35 @@ public class PascalCompiler {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        String[] jfelx_file = {"./src/pascal/compiler/lexer.flex"};
-        jflex.Main.main(jfelx_file);
-
-        String[] cup_file = {"-parser", "AnalizadorSintactico", "./src/pascal/compiler/sintax.cup"};
+        LexerGenerator.main(args);
+        CupGenerator.main(args);
+        Reader reader;
         try {
-            java_cup.Main.main(cup_file);
+            reader = new BufferedReader(new FileReader("simpleLoop.txt"));
+            Lexer lexer = new Lexer(reader);
+           
+            
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+            mapper.setVisibilityChecker(mapper.getSerializationConfig().getDefaultVisibilityChecker()
+                .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
+                .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
+                .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
+                .withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
+            //mapper.setVisibility(JsonMethod.FIELD, Visibility.ANY);
+            
+            parser cupParser = new parser(lexer);
+            cupParser.parse();
+            mapper.writeValue(new File("./AST.json"), cupParser.root);
+
+            
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(PascalCompiler.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(PascalCompiler.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
             Logger.getLogger(PascalCompiler.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        boolean mvAS = moveFile("AnalizadorSintactico.java");
-        boolean mvSym= moveFile("sym.java");
-
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader("./test/buble.pas"));
-            Lexer lexer = new Lexer(reader);
-            Integer token = lexer.next_token().sym;
-
-            while (token != 0) {
-                token = lexer.next_token().sym;
-            }
-        } catch (IOException e) {
-            System.out.println(e);
-        }
-
-        String[] archivoPrueba = {"./test/buble.pas"};
-        AnalizadorSintactico.main(archivoPrueba);
-
     }
 
     public static boolean moveFile(String fileName) {
