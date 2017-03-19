@@ -37,9 +37,8 @@ public class PascalCompiler {
         CupGenerator.main(args);
         Reader reader;
         try {
-            reader = new BufferedReader(new FileReader("./test/sum.pas"));
+            reader = new BufferedReader(new FileReader("./test/hello.pas"));
             Lexer lexer = new Lexer(reader);
-           
             
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
@@ -52,35 +51,19 @@ public class PascalCompiler {
            
             parser cupParser = new parser(lexer);
             cupParser.parse();
-            mapper.writeValue(new File("./pascal/compiler/AST.json"), cupParser.root);
+            mapper.writeValue(new File("./src/pascal/compiler/AST.json"), cupParser.root);
 
             
         } catch (FileNotFoundException ex) {
+            System.out.println(ex);
             Logger.getLogger(PascalCompiler.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
+            System.out.println(ex);
             Logger.getLogger(PascalCompiler.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
+            System.out.println(ex);
             Logger.getLogger(PascalCompiler.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    public static boolean moveFile(String fileName) {
-        boolean done = false;
-        File arch = new File(fileName);
-        if (arch.exists()) {
-            Path currentRelativePath = Paths.get("");
-            String newDir = currentRelativePath.toAbsolutePath().toString()
-                    + File.separator + "src" + File.separator
-                    + "pascal/compiler" + File.separator + arch.getName();
-            File oldFile = new File(newDir);
-            oldFile.delete();
-            if (arch.renameTo(new File(newDir))) {
-                done = true;
-            }
-        } else {
-            System.out.println("\nCode not found\n");
-        }
-        return done;
     }
 
 }

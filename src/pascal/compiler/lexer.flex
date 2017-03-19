@@ -16,8 +16,15 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
 %line
 %column
 %caseless
-
+%eofval{
+	if(stComment!=0)
+		System.out.println("Comment started at line " + commentLine + " is not finished");
+	return new Symbol(sym.EOF, yyline, yycolumn);
+%eofval}
+%eofclose
 %{
+	int stComment = 0;
+	int commentLine;
 
 	private Symbol symbol(String name, int sym) {
 		System.out.println("name: " + name + " sym: " + sym);
@@ -42,11 +49,13 @@ integer = {digit}+
 
 id = {letter}({letter}|{digit}|[_])*
 
-comment = \{.*\}
+%state COMMENT
+
 %%
 
 <YYINITIAL> {
 	[ \n\t]+		{ }
+	"{"				{ commentLine = yyline+1; stComment++; yybegin(COMMENT); }
 	"program"		{ return symbol("program", sym.PROGRAM); }
 	"begin"			{ return symbol("begin", sym.BEGIN); }
 	"writeln"		{ return symbol("writeln", sym.WRITE_LN); }
@@ -85,8 +94,6 @@ comment = \{.*\}
 	")"				{ return symbol(")", sym.RIGHT_PAR); }
 	"["				{ return symbol("[", sym.LEFT_BRACKET); }
 	"]"				{ return symbol("]", sym.RIGHT_BRACKET); }
-	"{"				{ return symbol("{", sym.LEFT_KEY); }
-	"}"				{ return symbol("}", sym.RIGHT_KEY); }
 	";"				{ return symbol(";", sym.SEMICOLON); }
 	":"				{ return symbol(":", sym.COLON); }
 	","				{ return symbol(",", sym.COMMA); }
@@ -113,9 +120,14 @@ comment = \{.*\}
 
 	{letter}		{ return symbol("charconst", sym.CHAR_CONS, yytext()); }
 	{integer}		{ return symbol("integerconst", sym.INT_CONST, yytext()); }
+
 	{id}			{ return symbol("id", sym.ID, yytext()); }
 
-	{comment}		{ System.out.println("comment: " + yytext().substring(1,yytext().length()-1)); }
-
 	.				{ error("Illegal character <"+ yytext()+"> @ Line " + (yyline+1)); }
+}
+
+<COMMENT> {
+	"{"		{ stComment++; }
+	"}"		{ stComment--; if(stComment==0) yybegin(YYINITIAL); }
+	[^]	{ }
 }

@@ -6,6 +6,8 @@ import pascal.ast.*;
 
 parser code {:
 
+	public Object root;
+
 	/* Reporte de error encontrado. */
 	public void report_error(String message, Object info) {
 		StringBuilder m = new StringBuilder("Sintax Error");
@@ -27,6 +29,10 @@ parser code {:
 	public void report_fatal_error(String message, Object info) {
 		report_error(message, info);
 		System.exit(1);
+	}
+
+	public void syntax_error(Symbol cur_token) {
+		report_error("on Token "+ cur_token, cur_token);
 	}
 
 	/* Metodo main para garantizar la ejecucion del analizador
@@ -85,7 +91,6 @@ start with pascalProgram;
 
 pascalProgram::=
 								PROGRAM ID programHeading SEMICOLON block DOT {:
-									parser.root = RESULT;
 									  :}
 							;
 
@@ -184,6 +189,10 @@ variableDeclaration::=
 							|
 							   variableDeclaration SEMICOLON variableidList COLON type  {:
 									:}
+							|
+								VAR variableidList COLON error {:
+									System.out.println("variableDeclaration error");
+									:}
 							;
 
 
@@ -281,6 +290,7 @@ fixedPart::=
 
 recordField::=
 								empty {:
+									RESULT = null;
 									:}
 							|
 								fieldidList COLON type   {:
@@ -323,6 +333,7 @@ variantList::=
 
 variant::=
 								empty {:
+									RESULT = null;
 									:}
 							|
 								caseLabelList COLON LEFT_PAR fieldList RIGHT_PAR  {:
@@ -452,6 +463,7 @@ statement::=
 									:}
 							|
 								empty  {:
+									RESULT = null;
 									:}
 							;
 
@@ -463,7 +475,7 @@ variable::=
 								ID DOT fieldid  {:
 									:}
 							|
-								ID XOR  {:
+								ID XOR {:
 									:}
 							;
 
@@ -524,6 +536,13 @@ expression::=
 									:}
 							|
 								additiveExpression  {:
+									:}
+							|
+								INT_CONST {:
+									:}
+							|
+								error {:
+									System.out.println("expression error");
 									:}
 							;
 
@@ -594,7 +613,7 @@ multiplicativeOp::=
 							|
 								AND
 							|
-								IN {: //putos no se les olvide meter esta mierda en el cup ***************************************************
+								IN {:
 									:}
 							;
 
@@ -645,9 +664,6 @@ primaryExpression::=
 
 
 elementList::=
-								empty  {:
-									:}
-							|
 								element  {:
 									:}
 							|
@@ -696,6 +712,4 @@ varid::=
 
 
 empty::=
-								{:
-								:}
 							;

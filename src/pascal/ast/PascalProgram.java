@@ -9,6 +9,13 @@ package pascal.ast;
  *
  * @author jorgecaballero
  */
-public class PascalProgram {
+public class PascalProgram extends TypeDeclaration implements TreeNode{
+
+    
+    
+    @Override
+    public void accept(NodeVisitor visitor) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

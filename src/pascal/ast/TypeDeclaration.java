@@ -9,6 +9,6 @@ package pascal.ast;
  *
  * @author jorgecaballero
  */
-public class TypeDeclaration {
+public abstract class TypeDeclaration implements TreeNode {
     
 }

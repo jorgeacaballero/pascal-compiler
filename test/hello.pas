@@ -1,5 +1,5 @@
-program Hello;
-begin
-  writeln ('Hello, world.')
-  num := 0
-end.
+program Hello(hola);
+	begin
+		number ^ := 9;
+	end
+.
