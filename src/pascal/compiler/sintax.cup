@@ -161,7 +161,7 @@ labelDeclaration::=
 
 
 constantDeclaration::=
-							   CONST  ID EQUALS constant  {:
+							   CONST ID EQUALS constant  {:
 									:}
 							|
 							   constantDeclaration SEMICOLON  ID EQUALS constant  {:
@@ -457,16 +457,13 @@ statement::=
 
 
 variable::=
-								variable LEFT_BRACKET subscriptList RIGHT_BRACKET  {:
+								ID LEFT_BRACKET subscriptList RIGHT_BRACKET  {:
 									:}
 							|
-								variable DOT fieldid  {:
+								ID DOT fieldid  {:
 									:}
 							|
-								variable XOR  {:
-									:}
-							|
-								ID  {:
+								ID XOR  {:
 									:}
 							;
 
