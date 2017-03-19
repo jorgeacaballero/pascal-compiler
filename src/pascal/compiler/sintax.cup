@@ -55,7 +55,7 @@ terminal  PROGRAM, BEGIN, END, AND, ARRAY, CONST, DIV, DO, ELSE,
 		  UNTIL;
 
 
-//terminal CHAR, LEFT_KEY, TYPE, WRITE_LN, BOOLEAN, INT_CONST, TRUE, FALSE, CHAR_CONS, RIGHT_KEY
+terminal CHAR, LEFT_KEY, TYPE, WRITE_LN, BOOLEAN, INT_CONST, TRUE, FALSE, CHAR_CONS, RIGHT_KEY;
 
 
 non terminal pascalProgram, programHeading, identifierList, block, labelDeclaration,
@@ -85,7 +85,7 @@ start with pascalProgram;
 
 pascalProgram::=
 								PROGRAM ID programHeading SEMICOLON block DOT {:
-									parser.root = "Hola"
+									parser.root = RESULT;
 									  :}
 							;
 
