@@ -50,7 +50,7 @@ terminal  PROGRAM, BEGIN, END, AND, ARRAY, CONST, DIV, DO, ELSE,
 		  VAR, WHILE, LEFT_PAR, RIGHT_PAR, LEFT_BRACKET, RIGHT_BRACKET,
 		  SEMICOLON, COLON, COMMA, DOT, ASIGN, PLUS, MINUS,
 		  DIVIDE, PRODUCT, XOR, MOD, EQUALS, NOT_EQUAL, GREATER_THAN, LESS_THAN,
-		  GREATER_EQUALS, LESS_EQUAL, INTEGER,
+		  GREATER_EQUALS, LESS_EQUAL, INTEGER, WITH,
 		  ID, IN, STRING, SET, FILE, PACKED, CASE, FORWARD, REPEAT,
 		  UNTIL;
 
@@ -76,7 +76,7 @@ precedence nonassoc EQUALS, NOT_EQUAL, LESS_THAN, GREATER_THAN, LESS_EQUAL, GREA
 precedence left PLUS, MINUS ;
 precedence left PRODUCT, DIVIDE ;
 precedence nonassoc NOT ;
-precedence left DOT, LEFT_BRACKET, RIGHT_BRACKET ;
+precedence left DOT, LEFT_BRACKET, RIGHT_BRACKET, LEFT_PAR, RIGHT_PAR ;
 precedence right ELSE;
 
 start with pascalProgram;
@@ -104,13 +104,13 @@ identifierList::=
 							;
 
 
-block::= 
+block::=
 								labelDeclaration SEMICOLON block1  {:
 									  :}
-							| 
+							|
 								block1 {:
-									  :}	
-							;						
+									  :}
+							;
 
 block1::=
 								constantDeclaration SEMICOLON block2{:
@@ -426,6 +426,12 @@ statement::=
 								FOR varid ASIGN forList DO statement  {:
 									:}
 							|
+								WITH recordVariableList DO statement  {:
+									:}
+							|
+								CASE expression OF caseList END {:
+									:}
+							|
 								WHILE expression DO statement  {:
 									:}
 							|
@@ -450,9 +456,6 @@ statement::=
 
 
 variable::=
-								ID  {:
-									:}
-							|
 								variable LEFT_BRACKET subscriptList RIGHT_BRACKET  {:
 									:}
 							|
@@ -460,6 +463,9 @@ variable::=
 									:}
 							|
 								variable XOR  {:
+									:}
+							|
+								ID  {:
 									:}
 							;
 
@@ -617,7 +623,16 @@ unaryOp::=
 
 
 primaryExpression::=
-								variable  {:
+								typeid LEFT_PAR expressionList RIGHT_PAR {:
+									:}
+							|
+								LEFT_BRACKET elementList RIGHT_BRACKET {:
+									:}
+							|
+								LEFT_PAR expression RIGHT_PAR  {:
+									:}
+							|
+								NIL  {:
 									:}
 							|
 								INTEGER  {:
@@ -626,16 +641,7 @@ primaryExpression::=
 								STRING  {:
 									:}
 							|
-								NIL  {:
-									:}
-							|
-								typeid LEFT_PAR expressionList RIGHT_PAR {:
-									:}
-							|
-								LEFT_BRACKET elementList RIGHT_BRACKET {:
-									:}
-							|
-								LEFT_PAR expression RIGHT_PAR  {:
+								variable  {:
 									:}
 							;
 

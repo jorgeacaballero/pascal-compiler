@@ -80,6 +80,7 @@ comment = \{.*\}
 	"forward"		{ return symbol("forward", sym.FORWARD); }
 	"repeat"		{ return symbol("repeat", sym.REPEAT); }
 	"until"			{ return symbol("until", sym.UNTIL); }
+	"with"			{ return symbol("with", sym.WITH); }
 	"("				{ return symbol("(", sym.LEFT_PAR); }
 	")"				{ return symbol(")", sym.RIGHT_PAR); }
 	"["				{ return symbol("[", sym.LEFT_BRACKET); }
