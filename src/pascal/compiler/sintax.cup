@@ -58,7 +58,7 @@ terminal  PROGRAM, BEGIN, END, AND, ARRAY, CONST, DIV, DO, ELSE,
 		  DIVIDE, PRODUCT, XOR, MOD, EQUALS, NOT_EQUAL, GREATER_THAN, LESS_THAN,
 		  GREATER_EQUALS, LESS_EQUAL, INTEGER, WITH,
 		  ID, IN, STRING, SET, FILE, PACKED, CASE, FORWARD, REPEAT,
-		  UNTIL, CHAR, LEFT_KEY, TYPE, WRITE_LN, BOOLEAN, INT_CONST,
+		  UNTIL, CHAR, LEFT_KEY, TYPE, WRITE_LN, READ_LN, BOOLEAN, INT_CONST,
 		  TRUE, FALSE, CHAR_CONS, RIGHT_KEY;
 
 
@@ -247,9 +247,6 @@ constant::=
 							|
 								STRING{:
 									:}
-							|
-								constid  {:
-									:}
 							;
 
 
@@ -260,7 +257,7 @@ type::=
 								structuredType  {:
 									:}
 							|
-								XOR typeid  {:
+								constant  {:
 									:}
 							;
 
@@ -469,6 +466,12 @@ statement::=
 								procid LEFT_PAR expressionList RIGHT_PAR{:
 									:}
 							|
+								WRITE_LN LEFT_PAR expressionList RIGHT_PAR{:
+									:}
+							|
+								READ_LN LEFT_PAR expressionList RIGHT_PAR{:
+									:}
+							|							
 								REPEAT statementList UNTIL expression {:
 									:}
 							|
@@ -487,7 +490,7 @@ statement::=
 								IF expression THEN statement {:
 									:}
 							|
-								variable ASIGN expression  {:
+								variable expression SEMICOLON {:
 									:}
 							|
 								BEGIN statementList END  {:
@@ -512,7 +515,7 @@ variable::=
 								ID DOT fieldid  {:
 									:}
 							|
-								ID XOR {:
+								ID ASIGN {:
 									:}
 							;
 
