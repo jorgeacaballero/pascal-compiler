@@ -10,5 +10,10 @@ package pascal.ast;
  * @author jorgecaballero
  */
 public class RelationalOp {
+    public String sign;
+
+    public RelationalOp(String sign) {
+        this.sign = sign;
+    }
     
 }

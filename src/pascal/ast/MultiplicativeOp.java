@@ -10,5 +10,10 @@ package pascal.ast;
  * @author jorgecaballero
  */
 public class MultiplicativeOp {
+    public String op;
+
+    public MultiplicativeOp(String op) {
+        this.op = op;
+    }
     
 }

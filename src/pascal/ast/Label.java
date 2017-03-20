@@ -10,5 +10,11 @@ package pascal.ast;
  * @author jorgecaballero
  */
 public class Label {
+    public String sign;
+
+    public Label(String sign) {
+        this.sign = sign;
+    }
+    
     
 }

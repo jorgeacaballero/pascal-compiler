@@ -10,5 +10,11 @@ package pascal.ast;
  * @author jorgecaballero
  */
 public class UnaryOp {
+    public String operator;
+
+    public UnaryOp(String operator) {
+        this.operator = operator;
+    }
+    
     
 }

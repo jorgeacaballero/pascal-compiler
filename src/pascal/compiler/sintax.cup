@@ -79,7 +79,7 @@ non terminal IndexList indexList;
 non terminal FieldList fieldList;
 non terminal FixedPart fixedPart;
 non terminal RecordField recordField;
-non terminal FieldList fieldidList;
+non terminal FieldIdList fieldidList;
 non terminal VariantPart variantPart;
 non terminal TagField tagField;
 non terminal VariantList variantList;
@@ -112,7 +112,6 @@ non terminal UnaryOp unaryOp;
 non terminal PrimaryExpression primaryExpression;
 non terminal ElementList elementList;
 non terminal Element element;
-non terminal ConstId constid, typeid, procid, fieldid, varid;
 non terminal empty;
 
 precedence left OR ;
@@ -269,7 +268,7 @@ simpleType::=
 							 /*  constant ... constant  {:
 									:}
 									| */
-							   typeid {:
+							   ID {:
 									:}
 							;
 
@@ -348,10 +347,10 @@ variantPart::=
 
 
 tagField::=
-								typeid  {:
+								ID  {:
 									:}
 							|
-								ID COLON typeid  {:
+								ID COLON ID  {:
 									:}
 							;
 
@@ -397,7 +396,7 @@ procOrFunc::=
 								PROCEDURE ID parameters blockOrForward {:
 									:}
 							|
-								FUNCTION ID parameters COLON typeid blockOrForward {:
+								FUNCTION ID parameters COLON ID blockOrForward {:
 									:}
 							;
 
@@ -427,16 +426,16 @@ formalParameterList::=
 
 
 formalParameterSection::=
-								parameteridList COLON typeid {:
+								parameteridList COLON ID {:
 									:}
 							|
-								VAR parameteridList COLON typeid  {:
+								VAR parameteridList COLON ID  {:
 									:}
 							|
 								PROCEDURE ID parameters {:
 									:}
 							|
-								FUNCTION ID parameters COLON typeid {:
+								FUNCTION ID parameters COLON ID {:
 									:}
 							;
 
@@ -463,7 +462,7 @@ statement::=
 								IF expression THEN statement ELSE statement  {:
 									:}
 							|
-								procid LEFT_PAR expressionList RIGHT_PAR{:
+								ID LEFT_PAR expressionList RIGHT_PAR{:
 									:}
 							|
 								WRITE_LN LEFT_PAR expressionList RIGHT_PAR{:
@@ -471,11 +470,11 @@ statement::=
 							|
 								READ_LN LEFT_PAR expressionList RIGHT_PAR{:
 									:}
-							|							
+							|
 								REPEAT statementList UNTIL expression {:
 									:}
 							|
-								FOR varid ASIGN forList DO statement  {:
+								FOR ID ASIGN forList DO statement  {:
 									:}
 							|
 								WITH recordVariableList DO statement  {:
@@ -499,7 +498,7 @@ statement::=
 								label COLON statement  {:
 									:}
 							|
-								procid  {:
+								ID  {:
 									:}
 							|
 								empty  {:
@@ -512,7 +511,7 @@ variable::=
 								ID LEFT_BRACKET subscriptList RIGHT_BRACKET  {:
 									:}
 							|
-								ID DOT fieldid  {:
+								ID DOT ID  {:
 									:}
 							|
 								ID ASIGN {:
@@ -530,55 +529,79 @@ subscriptList::=
 
 
 caseList::=
-								caseLabelList COLON statement  {:
+								caseLabelList:cll COLON:s statement:stm  {:
+									CaseList r = new CaseList(cll, (String) s, stm);
+									RESULT = r;
 									:}
 							|
-								caseList SEMICOLON caseLabelList COLON statement  {:
+								caseList:cl SEMICOLON:sc caseLabelList:cll COLON:c statement:stm  {:
+									CaseList r = new CaseList(cll, (String) sc, (String) c, stm, cl);
+									RESULT = r;
 									:}
 							;
 
 
 forList::=
-								expression TO expression  {:
+								expression:exl TO:s expression:exr  {:
+									ForList r = new ForList(exl, (String) s, exr);
+									RESULT = r;
 									:}
 							|
-								expression DOWNTO expression  {:
+								expression:exl DOWNTO:s expression:exr  {:
+									ForList r = new ForList(exl, (String) s, exr);
+									RESULT = r;
 									:}
 							;
 
 
 expressionList::=
-								expression  {:
+								expression:ex  {:
+									ExpressionList r = new ExpressionList(ex);
+									RESULT = r;
 									:}
 							|
-								expressionList COMMA expression  {:
+								expressionList:el COMMA:s expression:ex  {:
+									ExpressionList r = new ExpressionList(el, (String) s, ex);
+									RESULT = r;
 									:}
 							;
 
 
 label::=
-								INTEGER{:
+								INTEGER:s{:
+									Label r = new Label((String) s);
+									RESULT = r;
 									:}
 							;
 
 
 recordVariableList::=
-								variable  {:
+								variable:v  {:
+									RecordVariableList r = new RecordVariableList(v);
+									RESULT = r;
 									:}
 							|
-								recordVariableList COMMA variable  {:
+								recordVariableList:rvl COMMA:s variable:v  {:
+									RecordVariableList r = new RecordVariableList(rvl, (String) s, v);
+									RESULT = r;
 									:}
 							;
 
 
 expression::=
-								expression relationalOp additiveExpression {:
+								expression:ex relationalOp:ro additiveExpression:ae {:
+									Expression r = new Expression(ex, ro, ae);
+									RESULT = r;
 									:}
 							|
-								additiveExpression  {:
+								additiveExpression:ae {:
+									Expression r = new Expression(ae);
+									RESULT = r;
 									:}
 							|
-								INT_CONST {:
+								INT_CONST:s {:
+									Expression r = new Expression((String) s);
+									RESULT = r;
 									:}
 							|
 								error {:
@@ -588,167 +611,209 @@ expression::=
 
 
 relationalOp::=
-								LESS_THAN  {:
+								LESS_THAN:s  {:
+									RelationalOp r = new RelationalOp((String) s);
+									RESULT = r;
 									:}
 							|
-								LESS_EQUAL {:
+								LESS_EQUAL:s {:
+									RelationalOp r = new RelationalOp((String) s);
+									RESULT = r;
 									:}
 							|
-								EQUALS {:
+								EQUALS:s {:
+									RelationalOp r = new RelationalOp((String) s);
+									RESULT = r;
 									:}
 							|
-								NOT_EQUAL {:
+								NOT_EQUAL:s {:
+									RelationalOp r = new RelationalOp((String) s);
+									RESULT = r;
 									:}
 							|
-								GREATER_EQUALS {:
+								GREATER_EQUALS:s {:
+									RelationalOp r = new RelationalOp((String) s);
+									RESULT = r;
 									:}
 							|
-								GREATER_THAN {:
-										:}
+								GREATER_THAN:s {:
+									RelationalOp r = new RelationalOp((String) s);
+									RESULT = r;
+									:}
 							;
 
 
 additiveExpression::=
-								additiveExpression additiveOp multiplicativeExpression {:
+								additiveExpression:ae additiveOp:ao multiplicativeExpression:me {:
+									AdditiveExpression r = new AdditiveExpression(ae, ao, me);
+									RESULT = r;
 									:}
 							|
-								multiplicativeExpression  {:
+								multiplicativeExpression:me  {:
+									AdditiveExpression r = new AdditiveExpression(me);
+									RESULT = r;
 									:}
 							;
 
 
 additiveOp::=
-								PLUS {:
+								PLUS:s {:
+									AdditiveOp r = new AdditiveOp((String) s);
+									RESULT = r;
 									:}
 						   |
-								MINUS {:
+								MINUS:s {:
+									AdditiveOp r = new AdditiveOp((String) s);
+									RESULT = r;
 									:}
 						   |
-								OR {:
+								OR:s {:
+									AdditiveOp r = new AdditiveOp((String) s);
+									RESULT = r;
 									:}
 							;
 
 
 multiplicativeExpression::=
-								multiplicativeExpression multiplicativeOp unaryExpression {:
+								multiplicativeExpression:me multiplicativeOp:mo unaryExpression:ue {:
+									MultiplicativeExpression r = new MultiplicativeExpression(me, mo, ue);
+									RESULT = r;
 									:}
 							|
-								unaryExpression  {:
+								unaryExpression:ue  {:
+									MultiplicativeExpression r = new MultiplicativeExpression(ue);
+									RESULT = r;
 									:}
 							;
 
 
 multiplicativeOp::=
-								PRODUCT {:
+								PRODUCT:o {:
+									MultiplicativeOp r = new MultiplicativeOp((String) o);
+									RESULT = r;
 									:}
 							|
-								DIVIDE {:
+								DIVIDE:o {:
+									MultiplicativeOp r = new MultiplicativeOp((String) o);
+									RESULT = r;
 									:}
 							|
-								DIV  {:
+								DIV:o {:
+									MultiplicativeOp r = new MultiplicativeOp((String) o);
+									RESULT = r;
 									:}
 							|
-								MOD {:
+								MOD:o {:
+									MultiplicativeOp r = new MultiplicativeOp((String) o);
+									RESULT = r;
 									:}
 							|
-								AND
+								AND:o {:
+									MultiplicativeOp r = new MultiplicativeOp((String) o);
+									RESULT = r;
+									:}
 							|
-								IN {:
+								IN:o {:
+									MultiplicativeOp r = new MultiplicativeOp((String) o);
+									RESULT = r;
 									:}
 							;
 
 
 unaryExpression::=
-								unaryOp unaryExpression  {:
+								unaryOp:uo unaryExpression:ue  {:
+									UnaryExpression r = new UnaryExpression(uo, ue);
+									RESULT = r;
 									:}
 							|
-								primaryExpression  {:
+								primaryExpression:pe  {:
+									UnaryExpression r = new UnaryExpression(pe);
+									RESULT = r;
 									:}
 							;
 
 
 unaryOp::=
-								PLUS {:
+								PLUS:u {:
+									UnaryOp r = new UnaryOp((String) u);
+									RESULT = r;
 									:}
 							|
-								MINUS {:
+								MINUS:u {:
+									UnaryOp r = new UnaryOp((String) u);
+									RESULT = r;
 									:}
 							|
-								NOT {:
+								NOT:u {:
+									UnaryOp r = new UnaryOp((String) u);
+									RESULT = r;
 									:}
 							;
 
 
 primaryExpression::=
-								typeid LEFT_PAR expressionList RIGHT_PAR {:
+								ID:tid LEFT_PAR expressionList:el RIGHT_PAR {:
+									PrimaryExpression r = new PrimaryExpression(tid, el);
+									RESULT = r;
 									:}
 							|
-								LEFT_BRACKET elementList RIGHT_BRACKET {:
+								LEFT_BRACKET elementList:elm RIGHT_BRACKET {:
+									PrimaryExpression r = new PrimaryExpression(elm);
+									RESULT = r;
 									:}
 							|
-								LEFT_PAR expression RIGHT_PAR  {:
+								LEFT_PAR expression:exp RIGHT_PAR  {:
+									PrimaryExpression r = new PrimaryExpression(exp);
+									RESULT = r;
 									:}
 							|
-								NIL  {:
+								NIL:nil  {:
+									PrimaryExpression r = new PrimaryExpression((String) nil);
+									RESULT = r;
 									:}
 							|
-								INTEGER  {:
+								INTEGER:integer  {:
+									PrimaryExpression r = new PrimaryExpression((String) integer);
+									RESULT = r;
 									:}
 							|
-								STRING  {:
+								STRING:string  {:
+									PrimaryExpression r = new PrimaryExpression((String) string);
+									RESULT = r;
 									:}
 							|
-								variable  {:
+								variable:var  {:
+									PrimaryExpression r = new PrimaryExpression(var);
+									RESULT = r;
 									:}
 							;
 
 
 elementList::=
-								element  {:
+								element:e  {:
+									ElementList r = new ElementList(e);
+									RESULT = r;
 									:}
 							|
-								elementList COMMA element  {:
+								elementList:el COMMA element:e  {:
+									ElementList r = new ElementList(e, el);
+									RESULT = r;
 									:}
 							;
 
 
 element::=
-								expression  {:
+								expression:e  {:
+									Element r = new Element(e);
+									RESULT = r;
 									:}
 							|
-								element expression  {:
+								element:el expression:ex  {:
+									Element r = new Element(el, ex);
+									RESULT = r;
 									:}
 							;
 
-
-constid::=
-								ID  {:
-									:}
-							;
-
-
-typeid::=
-								ID  {:
-									:}
-							;
-
-
-procid::=
-								ID  {:
-									:}
-							;
-
-
-fieldid::=
-								ID   {:
-									:}
-							;
-
-
-varid::=
-								ID  {:
-									:}
-							;
 
 
 empty::=

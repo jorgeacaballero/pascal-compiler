@@ -10,5 +10,19 @@ package pascal.ast;
  * @author jorgecaballero
  */
 public class ExpressionList {
+    public ExpressionList el;
+    public String sign;
+    public Expression ex;
+
+    public ExpressionList(ExpressionList el, String sign, Expression ex) {
+        this.el = el;
+        this.sign = sign;
+        this.ex = ex;
+    }
+
+    public ExpressionList(Expression ex) {
+        this.ex = ex;
+    }
+    
     
 }

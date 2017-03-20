@@ -10,5 +10,23 @@ package pascal.ast;
  * @author jorgecaballero
  */
 public class Expression {
+    public Expression ex;
+    public RelationalOp ro;
+    public AdditiveExpression ae;
+    public String sign;
+
+    public Expression(Expression ex, RelationalOp ro, AdditiveExpression ae) {
+        this.ex = ex;
+        this.ro = ro;
+        this.ae = ae;
+    }
+
+    public Expression(String sign) {
+        this.sign = sign;
+    }
+
+    public Expression(AdditiveExpression ae) {
+        this.ae = ae;
+    }
     
 }

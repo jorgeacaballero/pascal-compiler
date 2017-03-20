@@ -10,5 +10,17 @@ package pascal.ast;
  * @author jorgecaballero
  */
 public class UnaryExpression {
+    public UnaryOp uo;
+    public UnaryExpression ue;
+    public PrimaryExpression pe;
+
+    public UnaryExpression(UnaryOp uo, UnaryExpression ue) {
+        this.uo = uo;
+        this.ue = ue;
+    }
+
+    public UnaryExpression(PrimaryExpression pe) {
+        this.pe = pe;
+    }
     
 }

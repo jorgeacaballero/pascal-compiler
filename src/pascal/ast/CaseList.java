@@ -10,5 +10,25 @@ package pascal.ast;
  * @author jorgecaballero
  */
 public class CaseList {
+    public CaseLabelList cll;
+    public String signl;
+    public String signr;
+    public Statement stm;
+    public CaseList cl;
+
+    public CaseList(CaseLabelList cll, String signl, Statement stm) {
+        this.cll = cll;
+        this.signl = signl;
+        this.stm = stm;
+    }
+
+    public CaseList(CaseLabelList cll, String signl, String signr, Statement stm, CaseList cl) {
+        this.cll = cll;
+        this.signl = signl;
+        this.signr = signr;
+        this.stm = stm;
+        this.cl = cl;
+    }
+    
     
 }

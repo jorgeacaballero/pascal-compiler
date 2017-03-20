@@ -10,5 +10,18 @@ package pascal.ast;
  * @author jorgecaballero
  */
 public class RecordVariableList {
+    public RecordVariableList rvl;
+    public String sign;
+    public Variable v;
+
+    public RecordVariableList(RecordVariableList rvl, String sign, Variable v) {
+        this.rvl = rvl;
+        this.sign = sign;
+        this.v = v;
+    }
+
+    public RecordVariableList(Variable v) {
+        this.v = v;
+    }
     
 }

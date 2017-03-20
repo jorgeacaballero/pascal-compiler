@@ -10,5 +10,10 @@ package pascal.ast;
  * @author jorgecaballero
  */
 public class AdditiveOp {
+    public String sign;
+
+    public AdditiveOp(String sign) {
+        this.sign = sign;
+    }
     
 }

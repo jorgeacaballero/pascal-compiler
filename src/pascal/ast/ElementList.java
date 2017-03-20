@@ -10,5 +10,16 @@ package pascal.ast;
  * @author jorgecaballero
  */
 public class ElementList {
+    public Element e;
+    public ElementList el;
+
+    public ElementList(Element e) {
+        this.e = e;
+    }
+
+    public ElementList(Element e, ElementList el) {
+        this.e = e;
+        this.el = el;
+    }
     
 }
