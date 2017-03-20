@@ -40,7 +40,7 @@ parser code {:
 	   de simbolos correspondiente. */
 	public static void main(String[] args){
 		try {
-			AnalizadorSintactico asin = new AnalizadorSintactico(
+			parser asin = new parser(
 					new Lexer( new FileReader(args[0])));
 			Object result = asin.parse().value;
 			System.out.println("\n*** Resultados finales ***");
