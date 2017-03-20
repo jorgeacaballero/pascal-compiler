@@ -40,7 +40,7 @@ parser code {:
 	   de simbolos correspondiente. */
 	public static void main(String[] args){
 		try {
-			AnalizadorSintactico asin = new AnalizadorSintactico(
+			parser asin = new parser(
 					new Lexer( new FileReader(args[0])));
 			Object result = asin.parse().value;
 			System.out.println("\n*** Resultados finales ***");
@@ -58,23 +58,62 @@ terminal  PROGRAM, BEGIN, END, AND, ARRAY, CONST, DIV, DO, ELSE,
 		  DIVIDE, PRODUCT, XOR, MOD, EQUALS, NOT_EQUAL, GREATER_THAN, LESS_THAN,
 		  GREATER_EQUALS, LESS_EQUAL, INTEGER, WITH,
 		  ID, IN, STRING, SET, FILE, PACKED, CASE, FORWARD, REPEAT,
-		  UNTIL;
+		  UNTIL, CHAR, LEFT_KEY, TYPE, WRITE_LN, BOOLEAN, INT_CONST,
+		  TRUE, FALSE, CHAR_CONS, RIGHT_KEY;
 
 
-terminal CHAR, LEFT_KEY, TYPE, WRITE_LN, READ_LN, BOOLEAN, INT_CONST, TRUE, FALSE, CHAR_CONS, RIGHT_KEY;
-
-
-non terminal pascalProgram, programHeading, identifierList, block, labelDeclaration,
-			 constantDeclaration, typeDeclaration, variableDeclaration, variableidList,
-			 constant, type, simpleType, structuredType, indexList, fieldList, fixedPart,
-			 recordField, fieldidList, variantPart, tagField, variantList, variant,
-			 caseLabelList, procAndFuncDeclaration, procOrFunc, blockOrForward, parameters,
-			 formalParameterList, formalParameterSection, parameteridList, statementList,
-			 statement, variable, subscriptList, caseList, forList, expressionList, label,
-			 recordVariableList, expression, relationalOp, additiveExpression, additiveOp,
-			 multiplicativeExpression, multiplicativeOp, unaryExpression, unaryOp,
-			 primaryExpression, elementList, element, constid, typeid, procid,
-			 fieldid, varid, empty, block1, block2, block3, block4, block5;
+non terminal PascalProgram pascalProgram;
+non terminal ProgramHeading programHeading;
+non terminal IdentifierList identifierList;
+non terminal Block block, block1, block2, block3, block4, block5;
+non terminal LabelDeclaration labelDeclaration;
+non terminal ConstantDeclaration constantDeclaration;
+non terminal TypeDeclaration typeDeclaration;
+non terminal VariableDeclaration variableDeclaration;
+non terminal VariableIdList variableidList;
+non terminal Constant constant;
+non terminal Type type;
+non terminal SimpleType simpleType;
+non terminal StructuredType structuredType;
+non terminal IndexList indexList;
+non terminal FieldList fieldList;
+non terminal FixedPart fixedPart;
+non terminal RecordField recordField;
+non terminal FieldList fieldidList;
+non terminal VariantPart variantPart;
+non terminal TagField tagField;
+non terminal VariantList variantList;
+non terminal Variant variant;
+non terminal CaseLabelList caseLabelList;
+non terminal ProcAndFuncDeclaration procAndFuncDeclaration;
+non terminal ProcOrFunc procOrFunc;
+non terminal BlockOrForward blockOrForward;
+non terminal Parameters parameters;
+non terminal FormalParameterList formalParameterList;
+non terminal FormalParameterSection formalParameterSection;
+non terminal ParameterIdList parameteridList;
+non terminal StatementList statementList;
+non terminal Statement statement;
+non terminal Variable variable;
+non terminal SubscriptList subscriptList;
+non terminal CaseList caseList;
+non terminal ForList forList;
+non terminal ExpressionList expressionList;
+non terminal Label label;
+non terminal RecordVariableList recordVariableList;
+non terminal Expression expression;
+non terminal RelationalOp relationalOp;
+non terminal AdditiveExpression additiveExpression;
+non terminal AdditiveOp additiveOp;
+non terminal MultiplicativeExpression multiplicativeExpression;
+non terminal MultiplicativeOp multiplicativeOp;
+non terminal UnaryExpression unaryExpression;
+non terminal UnaryOp unaryOp;
+non terminal PrimaryExpression primaryExpression;
+non terminal ElementList elementList;
+non terminal Element element;
+non terminal ConstId constid, typeid, procid, fieldid, varid;
+non terminal empty;
 
 precedence left OR ;
 precedence left AND ;
@@ -87,16 +126,18 @@ precedence right ELSE;
 
 start with pascalProgram;
 
-
-
 pascalProgram::=
 								PROGRAM ID programHeading SEMICOLON block DOT {:
+									  PascalProgram r = new PascalProgram();
+									  RESULT = r;
 									  :}
 							;
 
 
 programHeading::=
 								LEFT_PAR identifierList RIGHT_PAR{:
+									ProgramHeading r = new ProgramHeading();
+									RESULT = r;
 									  :}
 							;
 
@@ -206,6 +247,9 @@ constant::=
 							|
 								STRING{:
 									:}
+							|
+								constid  {:
+									:}
 							;
 
 
@@ -216,7 +260,7 @@ type::=
 								structuredType  {:
 									:}
 							|
-								constant  {:
+								XOR typeid  {:
 									:}
 							;
 
@@ -425,12 +469,6 @@ statement::=
 								procid LEFT_PAR expressionList RIGHT_PAR{:
 									:}
 							|
-								WRITE_LN LEFT_PAR expressionList RIGHT_PAR{:
-									:}
-							|
-								READ_LN LEFT_PAR expressionList RIGHT_PAR{:
-									:}
-							|
 								REPEAT statementList UNTIL expression {:
 									:}
 							|
@@ -449,7 +487,7 @@ statement::=
 								IF expression THEN statement {:
 									:}
 							|
-								variable expression  {:
+								variable ASIGN expression  {:
 									:}
 							|
 								BEGIN statementList END  {:
@@ -474,7 +512,7 @@ variable::=
 								ID DOT fieldid  {:
 									:}
 							|
-								ID ASIGN {:
+								ID XOR {:
 									:}
 							;
 

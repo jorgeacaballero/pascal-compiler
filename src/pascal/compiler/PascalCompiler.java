@@ -37,7 +37,7 @@ public class PascalCompiler {
         CupGenerator.main(args);
         Reader reader;
         try {
-            reader = new BufferedReader(new FileReader("./test/test.pas"));
+            reader = new BufferedReader(new FileReader("./test/hello.pas"));
             Lexer lexer = new Lexer(reader);
             
             ObjectMapper mapper = new ObjectMapper();

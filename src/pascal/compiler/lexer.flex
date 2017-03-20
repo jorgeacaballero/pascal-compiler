@@ -59,7 +59,6 @@ id = {letter}({letter}|{digit}|[_])*
 	"program"		{ return symbol("program", sym.PROGRAM); }
 	"begin"			{ return symbol("begin", sym.BEGIN); }
 	"writeln"		{ return symbol("writeln", sym.WRITE_LN); }
-	"readln"		{ return symbol("readln", sym.READ_LN); }
 	"end"			{ return symbol("end", sym.END); }
 	"and"			{ return symbol("and", sym.AND); }
 	"array"			{ return symbol("array", sym.ARRAY); }
