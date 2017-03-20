@@ -61,7 +61,7 @@ terminal  PROGRAM, BEGIN, END, AND, ARRAY, CONST, DIV, DO, ELSE,
 		  UNTIL;
 
 
-terminal CHAR, LEFT_KEY, TYPE, WRITE_LN, BOOLEAN, INT_CONST, TRUE, FALSE, CHAR_CONS, RIGHT_KEY;
+terminal CHAR, LEFT_KEY, TYPE, WRITE_LN, READ_LN, BOOLEAN, INT_CONST, TRUE, FALSE, CHAR_CONS, RIGHT_KEY;
 
 
 non terminal pascalProgram, programHeading, identifierList, block, labelDeclaration,
@@ -206,9 +206,6 @@ constant::=
 							|
 								STRING{:
 									:}
-							|
-								constid  {:
-									:}
 							;
 
 
@@ -219,7 +216,7 @@ type::=
 								structuredType  {:
 									:}
 							|
-								XOR typeid  {:
+								constant  {:
 									:}
 							;
 
@@ -428,6 +425,12 @@ statement::=
 								procid LEFT_PAR expressionList RIGHT_PAR{:
 									:}
 							|
+								WRITE_LN LEFT_PAR expressionList RIGHT_PAR{:
+									:}
+							|
+								READ_LN LEFT_PAR expressionList RIGHT_PAR{:
+									:}
+							|
 								REPEAT statementList UNTIL expression {:
 									:}
 							|
@@ -446,7 +449,7 @@ statement::=
 								IF expression THEN statement {:
 									:}
 							|
-								variable ASIGN expression  {:
+								variable expression  {:
 									:}
 							|
 								BEGIN statementList END  {:
@@ -471,7 +474,7 @@ variable::=
 								ID DOT fieldid  {:
 									:}
 							|
-								ID XOR {:
+								ID ASIGN {:
 									:}
 							;
 
