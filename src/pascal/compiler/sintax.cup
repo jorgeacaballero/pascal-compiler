@@ -6,7 +6,7 @@ import pascal.ast.*;
 
 parser code {:
 
-	public Object root;
+	public PascalProgram root = null;
 
 	/* Reporte de error encontrado. */
 	public void report_error(String message, Object info) {
@@ -126,9 +126,10 @@ precedence right ELSE;
 start with pascalProgram;
 
 pascalProgram::=
-								PROGRAM ID programHeading SEMICOLON block DOT {:
-									  PascalProgram r = new PascalProgram();
+								PROGRAM:pro ID:id programHeading:ph SEMICOLON:sc block:b DOT:dt {:
+									  PascalProgram r = new PascalProgram((String) pro, (String) id, ph, (String) sc, b, (String) dt);
 									  RESULT = r;
+									  parser.root = RESULT;
 									  :}
 							;
 
@@ -441,64 +442,64 @@ formalParameterSection::=
 
 
 parameteridList::=
-								ID  {:
+								ID:id  {:
 									:}
 							|
-								parameteridList COMMA ID  {:
+								parameteridList:pl COMMA:c ID:id  {:
 									:}
 							;
 
 
 statementList::=
-								statement  {:
+								statement:stm {:
 										:}
 							|
-								statementList SEMICOLON statement  {:
+								statementList:sl SEMICOLON:sc statement:stm  {:
 									:}
 							;
 
 
 statement::=
-								IF expression THEN statement ELSE statement  {:
+								IF:if expression:exp THEN:then statement:e ELSE:else statement:f  {:
 									:}
 							|
-								ID LEFT_PAR expressionList RIGHT_PAR{:
+								ID:id LEFT_PAR:lpar expressionList:el RIGHT_PAR:rpar{:
 									:}
 							|
-								WRITE_LN LEFT_PAR expressionList RIGHT_PAR{:
+								WRITE_LN:wln LEFT_PAR:lpar expressionList:el RIGHT_PAR:rpar{:
 									:}
 							|
-								READ_LN LEFT_PAR expressionList RIGHT_PAR{:
+								READ_LN:rdl LEFT_PAR:lpar expressionList:el RIGHT_PAR:rpar{:
 									:}
 							|
-								REPEAT statementList UNTIL expression {:
+								REPEAT:rpt statementList:sl UNTIL:until expression:exp {:
 									:}
 							|
-								FOR ID ASIGN forList DO statement  {:
+								FOR:for ID:id ASIGN:asign forList:fl DO:do statement:stm  {:
 									:}
 							|
-								WITH recordVariableList DO statement  {:
+								WITH:with recordVariableList:rvl DO:do statement:stm  {:
 									:}
 							|
-								CASE expression OF caseList END {:
+								CASE:case expression:exp OF:of caseList:cl END:end {:
 									:}
 							|
-								WHILE expression DO statement  {:
+								WHILE:while expression:exp DO:do statement:stm  {:
 									:}
 							|
-								IF expression THEN statement {:
+								IF:if expression:exp THEN:then statement:stm {:
 									:}
 							|
-								variable expression SEMICOLON {:
+								variable:var expression:exp SEMICOLON:sc {:
 									:}
 							|
-								BEGIN statementList END  {:
+								BEGIN:beg statementList:sl END:end  {:
 									:}
 							|
-								label COLON statement  {:
+								label:lb COLON:c statement:stm  {:
 									:}
 							|
-								ID  {:
+								ID:id {:
 									:}
 							|
 								empty  {:
@@ -508,22 +509,32 @@ statement::=
 
 
 variable::=
-								ID LEFT_BRACKET subscriptList RIGHT_BRACKET  {:
+								ID:id LEFT_BRACKET:lb subscriptList:sl RIGHT_BRACKET:rb  {:
+									Variable r = new Variable((String) id, (String) lb, (String) rb, sl);
+									RESULT = r;
 									:}
 							|
-								ID DOT ID  {:
+								ID:idl DOT:d ID:idr  {:
+									Variable r = new Variable((String) idl, (String) idr, (String) d);
+									RESULT = r;
 									:}
 							|
-								ID ASIGN {:
+								ID:id ASIGN:a {:
+									Variable r = new Variable((String) id, (String) a);
+									RESULT = r;
 									:}
 							;
 
 
 subscriptList::=
-								expression  {:
+								expression:e {:
+									SubscriptList r = new SubscriptList(e);
+									RESULT = r;
 									:}
 							|
-								subscriptList COMMA expression  {:
+								subscriptList:sl COMMA:s expression:e  {:
+									SubscriptList r = new SubscriptList(sl, (String) s, e);
+									RESULT = r;
 									:}
 							;
 
@@ -752,18 +763,18 @@ unaryOp::=
 
 
 primaryExpression::=
-								ID:tid LEFT_PAR expressionList:el RIGHT_PAR {:
-									PrimaryExpression r = new PrimaryExpression(tid, el);
+								ID:tid LEFT_PAR:lp expressionList:el RIGHT_PAR:rp {:
+									PrimaryExpression r = new PrimaryExpression((String) tid, (String) lp, el, (String) rp);
 									RESULT = r;
 									:}
 							|
-								LEFT_BRACKET elementList:elm RIGHT_BRACKET {:
-									PrimaryExpression r = new PrimaryExpression(elm);
+								LEFT_BRACKET:lb elementList:elm RIGHT_BRACKET:rb {:
+									PrimaryExpression r = new PrimaryExpression((String) lb, elm, (String) rb);
 									RESULT = r;
 									:}
 							|
-								LEFT_PAR expression:exp RIGHT_PAR  {:
-									PrimaryExpression r = new PrimaryExpression(exp);
+								LEFT_PAR:lp expression:exp RIGHT_PAR:rp  {:
+									PrimaryExpression r = new PrimaryExpression((String) lp, exp, (String) rp);
 									RESULT = r;
 									:}
 							|
@@ -795,8 +806,8 @@ elementList::=
 									RESULT = r;
 									:}
 							|
-								elementList:el COMMA element:e  {:
-									ElementList r = new ElementList(e, el);
+								elementList:el COMMA:c element:e  {:
+									ElementList r = new ElementList(e, (String) c, el);
 									RESULT = r;
 									:}
 							;

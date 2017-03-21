@@ -11,22 +11,30 @@ package pascal.ast;
  */
 public class PrimaryExpression {
     public String tid;
+    public String lsign;
+    public String rsign;
     public ExpressionList el;
     public ElementList elm;
     public Expression exp;
     public Variable var;
 
-    public PrimaryExpression(String tid, ExpressionList el) {
+    public PrimaryExpression(String tid, String lsign, ExpressionList el, String rsign) {
         this.tid = tid;
         this.el = el;
+        this.lsign = lsign;
+        this.rsign = rsign;
     }
 
-    public PrimaryExpression(ElementList elm) {
+    public PrimaryExpression(String lsign, ElementList elm, String rsign) {
         this.elm = elm;
+        this.lsign = lsign;
+        this.rsign = rsign;
     }
 
-    public PrimaryExpression(Expression exp) {
+    public PrimaryExpression(String lsign, Expression exp, String rsign) {
         this.exp = exp;
+        this.lsign = lsign;
+        this.rsign = rsign;
     }
 
     public PrimaryExpression(String tid) {

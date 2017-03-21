@@ -10,5 +10,19 @@ package pascal.ast;
  * @author jorgecaballero
  */
 public class SubscriptList {
+    public SubscriptList sl;
+    public String sign;
+    public Expression e;
+
+    public SubscriptList(SubscriptList sl, String sign, Expression e) {
+        this.sl = sl;
+        this.sign = sign;
+        this.e = e;
+    }
+
+    public SubscriptList(Expression e) {
+        this.e = e;
+    }
+    
     
 }

@@ -10,7 +10,22 @@ package pascal.ast;
  * @author jorgecaballero
  */
 public class PascalProgram extends TypeDeclaration implements TreeNode{
+    public String program;
+    public String id;
+    public ProgramHeading ph;
+    public String sc;
+    public Block b;
+    public String dot;
 
+    public PascalProgram(String program, String id, ProgramHeading ph, String sc, Block b, String dot) {
+        this.program = program;
+        this.id = id;
+        this.ph = ph;
+        this.sc = sc;
+        this.b = b;
+        this.dot = dot;
+    }
+    
     
     
     @Override
