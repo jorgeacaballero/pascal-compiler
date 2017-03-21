@@ -10,5 +10,18 @@ package pascal.ast;
  * @author jorgecaballero
  */
 public class ParameterIdList {
-    
+    public String id;
+    public ParameterIdList(String id){
+    	this.id = id;
+    }
+    public ParameterIdList pl;
+    public String c;
+    public String id;
+    public ParameterIdList(ParameterIdList pl, String c, String id){
+    	this.pl = pl;
+    	this.c = c;
+    	this.id = id;
+    }
+
+
 }

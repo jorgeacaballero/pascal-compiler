@@ -10,5 +10,17 @@ package pascal.ast;
  * @author jorgecaballero
  */
 public class StatementList {
-    
+    	public Statement stm;
+    	public StatementList sl;
+    	public String sc;
+
+    	public StatementList(Statement stm){
+    		this.stm = stm;
+    	}
+
+    	public StatementList(StatementList sl, String sc, Statement stm){
+    		this.sl = sl;
+    		this.sc = sc;
+    		this.stm = stm;
+    	}
 }

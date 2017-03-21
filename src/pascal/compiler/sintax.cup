@@ -443,63 +443,99 @@ formalParameterSection::=
 
 parameteridList::=
 								ID:id  {:
+									ParameterIdList r = new ParameterIdList((String)id);
+									RESULT = r;
 									:}
 							|
 								parameteridList:pl COMMA:c ID:id  {:
+									ParameterIdList r = new ParameterIdList(pl, (String)c, (String)id);
+									RESULT = r;
 									:}
 							;
 
 
 statementList::=
 								statement:stm {:
+									StatementList r = new StatementList(stm);
+									RESULT = r;
 										:}
 							|
 								statementList:sl SEMICOLON:sc statement:stm  {:
+									StatementList r = new StatementList(sl, (String)sc, stm);
+									RESULT = r;
 									:}
 							;
 
 
 statement::=
 								IF:if expression:exp THEN:then statement:e ELSE:else statement:f  {:
+									Statement r = new Statement((String)if, exp, (String)then, e, (String)else, f);
+									RESULT = r;
 									:}
 							|
 								ID:id LEFT_PAR:lpar expressionList:el RIGHT_PAR:rpar{:
+									Statement r = new Statement((String)id, (String)lpar, el, (String)rpar);
+									RESULT = r;
 									:}
 							|
 								WRITE_LN:wln LEFT_PAR:lpar expressionList:el RIGHT_PAR:rpar{:
+									Statement r = new Statement((String)wln, (String)lpar, el, (String)rpar);
+									RESULT = r;
 									:}
 							|
 								READ_LN:rdl LEFT_PAR:lpar expressionList:el RIGHT_PAR:rpar{:
+									Statement r = new Statement((String)rdl, (String)lpar, el, (String)rpar);
+									RESULT = r;
 									:}
 							|
 								REPEAT:rpt statementList:sl UNTIL:until expression:exp {:
+									Statement r = new Statement((String)rpt, sl, (String)until, exp);
+									RESULT = r;
 									:}
 							|
 								FOR:for ID:id ASIGN:asign forList:fl DO:do statement:stm  {:
+									Statement r = new Statement((String)for, (String)id, asign, fl, (String)do, stm);
+									RESULT = r;
 									:}
 							|
 								WITH:with recordVariableList:rvl DO:do statement:stm  {:
+									Statement r = new Statement((String)with, rvl, (String)do, stm);
+									RESULT = r;
 									:}
 							|
 								CASE:case expression:exp OF:of caseList:cl END:end {:
+									Statement r = new Statement((String)case, exp, (String)of, cl, (String)end);
+									RESULT = r;
 									:}
 							|
 								WHILE:while expression:exp DO:do statement:stm  {:
+									Statement r = new Statement((String)while, exp, (String)do, stm);
+									RESULT = r;
 									:}
 							|
 								IF:if expression:exp THEN:then statement:stm {:
+									Statement r = new Statement((String)if, exp, (String)then, stm);
+									RESULT = r;
 									:}
 							|
 								variable:var expression:exp SEMICOLON:sc {:
+									Statement r = new Statement(var, exp, (String)sc);
+									RESULT = r;
 									:}
 							|
 								BEGIN:beg statementList:sl END:end  {:
+									Statement r = new Statement((String)beg, sl, (String)end);
+									RESULT = r;
 									:}
 							|
 								label:lb COLON:c statement:stm  {:
+									Statement r = new Statement(lb, (String)c, stm);
+									RESULT = r;
 									:}
 							|
 								ID:id {:
+									Statement r = new Statement((String)id);
+									RESULT = r;
 									:}
 							|
 								empty  {:
