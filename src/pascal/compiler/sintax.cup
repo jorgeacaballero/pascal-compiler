@@ -327,40 +327,40 @@ recordField::=
 									RESULT = null;
 									:}
 							|
-								fieldidList COLON type   {:
+								fieldidList:fl COLON:colon type:type   {:
 									:}
 							;
 
 
 fieldidList::=
-								ID  {:
+								ID:id {:
 									:}
 							|
-								fieldidList COMMA  ID  {:
+								fieldidList:fl COMMA:comma ID:id  {:
 									:}
 							;
 
 
 variantPart::=
-								CASE tagField OF variantList {:
+								CASE:caseexp tagField:tf OF:of variantList:vl {:
 									:}
 							;
 
 
 tagField::=
-								ID  {:
+								ID:id  {:
 									:}
 							|
-								ID COLON ID  {:
+								ID:idl COLON:colon ID:idr  {:
 									:}
 							;
 
 
 variantList::=
-								variant {:
+								variant:vari {:
 									:}
 							|
-								variantList SEMICOLON variant {:
+								variantList:vl SEMICOLON:sc variant:vari {:
 									:}
 							;
 
@@ -370,73 +370,91 @@ variant::=
 									RESULT = null;
 									:}
 							|
-								caseLabelList COLON LEFT_PAR fieldList RIGHT_PAR  {:
+								caseLabelList:cll COLON:colon LEFT_PAR:lpar fieldList:fl RIGHT_PAR:rpar {:
 									:}
 							;
 
 
 caseLabelList::=
-								constant  {:
+								constant:c {:
 									:}
 							|
-								caseLabelList COMMA constant  {:
+								caseLabelList:cll COMMA:comma constant:con  {:
 									:}
 							;
 
 
 procAndFuncDeclaration::=
-								procOrFunc  {:
+								procOrFunc:pof  {:
 									:}
 							|
-								procAndFuncDeclaration SEMICOLON procOrFunc {:
+								procAndFuncDeclaration:pafd SEMICOLON:sc procOrFunc:pof {:
 									:}
 							;
 
 
 procOrFunc::=
-								PROCEDURE ID parameters blockOrForward {:
+								PROCEDURE:proc ID:id parameters:par blockOrForward:blo {:
 									:}
 							|
-								FUNCTION ID parameters COLON ID blockOrForward {:
+								FUNCTION:func ID:idl parameters:par COLON:colon ID:idr blockOrForward:bof {:
 									:}
 							;
 
 
 blockOrForward::=
-								SEMICOLON block{:
+								SEMICOLON:sc block:bl {:
+									BlockOrForward r = new BlockOrForward((String) sc, bl);
+									RESULT = r;
 									:}
 							|
-								SEMICOLON FORWARD  {:
+								SEMICOLON:sc FORWARD:fw {:
+									BlockOrForward r = new BlockOrForward((String) sc, (String) fw);
+									RESULT = r;
 									:}
 							;
 
 
 parameters::=
-								LEFT_PAR formalParameterList RIGHT_PAR{:
+								LEFT_PAR:lpar formalParameterList:fpl RIGHT_PAR:rpar {:
+									Parameters r = new Parameters((String) lpar, fpl, (String) rpar);
+									RESULT = r;
 									:}
 							;
 
 
 formalParameterList::=
-								formalParameterSection  {:
+								formalParameterSection:fps {:
+									FormalParameterList r = new FormalParameterList(fps);
+									RESULT = r;
 									:}
 							|
-								formalParameterList SEMICOLON formalParameterSection  {:
+								formalParameterList:fpl SEMICOLON:sc formalParameterSection:fps {:
+									FormalParameterList r = new FormalParameterList(fpl, (String) sc, fps);
+									RESULT = r;
 									:}
 							;
 
 
 formalParameterSection::=
-								parameteridList COLON ID {:
+								parameteridList:pil COLON:colon ID:id {:
+									FormalParameterSection r = new FormalParameterSection(pil, (String) colon, (String) id);
+									RESULT = r;
 									:}
 							|
-								VAR parameteridList COLON ID  {:
+								VAR:var parameteridList:pil COLON:colon ID:id  {:
+									FormalParameterSection r = new FormalParameterSection((String) var, pil, (String) colon, (String) id);
+									RESULT = r;
 									:}
 							|
-								PROCEDURE ID parameters {:
+								PROCEDURE:proc ID:id parameters:params {:
+									FormalParameterSection r = new FormalParameterSection((String) proc, (String) id, params);
+									RESULT = r;
 									:}
 							|
-								FUNCTION ID parameters COLON ID {:
+								FUNCTION:func ID:idl parameters:params COLON:colon ID:idr {:
+									FormalParameterSection r = new FormalParameterSection((String) func, (String) idl, params, (String) colon, (String) idr);
+									RESULT = r;
 									:}
 							;
 

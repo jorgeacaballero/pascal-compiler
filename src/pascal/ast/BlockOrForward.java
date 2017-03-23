@@ -10,5 +10,19 @@ package pascal.ast;
  * @author jorgecaballero
  */
 public class BlockOrForward {
+    public Block bl;
+    public String sc, fw;
+
+    public BlockOrForward(String sc, Block bl) {
+        this.bl = bl;
+        this.sc = sc;
+    }
+
+    public BlockOrForward(String sc, String fw) {
+        this.sc = sc;
+        this.fw = fw;
+    }
+    
+    
     
 }
