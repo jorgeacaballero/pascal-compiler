@@ -25,6 +25,7 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
 %{
 	int stComment = 0;
 	int commentLine;
+	StringBuffer string = new StringBuffer();
 
 	private Symbol symbol(String name, int sym) {
 		System.out.println("name: " + name + " sym: " + sym);
@@ -50,11 +51,13 @@ integer = {digit}+
 id = {letter}({letter}|{digit}|[_])*
 
 %state COMMENT
+%state STRING
 
 %%
 
 <YYINITIAL> {
 	[ \n\t]+		{ }
+	\"				{ string.setLength(0); string.append( yytext() ); yybegin(STRING); }
 	"{"				{ commentLine = yyline+1; stComment++; yybegin(COMMENT); }
 	"program"		{ return symbol("program", sym.PROGRAM); }
 	"begin"			{ return symbol("begin", sym.BEGIN); }
@@ -125,6 +128,18 @@ id = {letter}({letter}|{digit}|[_])*
 
 	.				{ error("Illegal character <"+ yytext()+"> @ Line " + (yyline+1)); }
 }
+
+<STRING> {
+      \"                             { string.append( yytext() );
+                                       yybegin(YYINITIAL);
+                                       return symbol("string literal" ,sym.STRING_LITERAL, string.toString());}
+      [^\n\r\"\\]+                   { string.append( yytext() ); }
+      \\t                            { string.append('\t'); }
+      \\n                            { string.append('\n'); }
+      \\r                            { string.append('\r'); }
+      \\\"                           { string.append('\"'); }
+      \\                             { string.append('\\'); }
+ }
 
 <COMMENT> {
 	"{"		{ stComment++; }
