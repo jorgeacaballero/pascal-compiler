@@ -468,8 +468,8 @@ statementList::=
 
 
 statement::=
-								IF:if expression:exp THEN:then statement:e ELSE:else statement:f  {:
-									Statement r = new Statement((String)if, exp, (String)then, e, (String)else, f);
+								IF:ifexp expression:exp THEN:then statement:e ELSE:elseexp statement:f  {:
+									Statement r = new Statement((String)ifexp, exp, (String)then, e, (String)elseexp, f);
 									RESULT = r;
 									:}
 							|
@@ -493,28 +493,28 @@ statement::=
 									RESULT = r;
 									:}
 							|
-								FOR:for ID:id ASIGN:asign forList:fl DO:do statement:stm  {:
-									Statement r = new Statement((String)for, (String)id, asign, fl, (String)do, stm);
+								FOR:forexp ID:id ASIGN:asign forList:fl DO:doexp statement:stm  {:
+									Statement r = new Statement((String)forexp, (String)id, (String)asign, fl, (String)doexp, stm);
 									RESULT = r;
 									:}
 							|
-								WITH:with recordVariableList:rvl DO:do statement:stm  {:
-									Statement r = new Statement((String)with, rvl, (String)do, stm);
+								WITH:with recordVariableList:rvl DO:doexp statement:stm  {:
+									Statement r = new Statement((String)with, rvl, (String)doexp, stm);
 									RESULT = r;
 									:}
 							|
-								CASE:case expression:exp OF:of caseList:cl END:end {:
-									Statement r = new Statement((String)case, exp, (String)of, cl, (String)end);
+								CASE:caseexp expression:exp OF:of caseList:cl END:endexp {:
+									Statement r = new Statement((String) caseexp, exp, (String)of, cl, (String)endexp);
 									RESULT = r;
 									:}
 							|
-								WHILE:while expression:exp DO:do statement:stm  {:
-									Statement r = new Statement((String)while, exp, (String)do, stm);
+								WHILE:whileexp expression:exp DO:doexp statement:stm  {:
+									Statement r = new Statement((String)whileexp, exp, (String)doexp, stm);
 									RESULT = r;
 									:}
 							|
-								IF:if expression:exp THEN:then statement:stm {:
-									Statement r = new Statement((String)if, exp, (String)then, stm);
+								IF:ifexp expression:exp THEN:then statement:stm {:
+									Statement r = new Statement((String)ifexp, exp, (String)then, stm);
 									RESULT = r;
 									:}
 							|

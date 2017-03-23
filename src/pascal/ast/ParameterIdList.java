@@ -16,7 +16,6 @@ public class ParameterIdList {
     }
     public ParameterIdList pl;
     public String c;
-    public String id;
     public ParameterIdList(ParameterIdList pl, String c, String id){
     	this.pl = pl;
     	this.c = c;
