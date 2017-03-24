@@ -10,5 +10,14 @@ package pascal.ast;
  * @author jorgecaballero
  */
 public class ProgramHeading {
+    public String lpar, rpar;
+    public IdentifierList il;
+
+    public ProgramHeading(String lpar, String rpar, IdentifierList il) {
+        this.lpar = lpar;
+        this.rpar = rpar;
+        this.il = il;
+    }
+    
     
 }

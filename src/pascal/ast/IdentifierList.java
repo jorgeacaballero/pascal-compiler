@@ -10,5 +10,18 @@ package pascal.ast;
  * @author jorgecaballero
  */
 public class IdentifierList {
+    public String id, comma;
+    public IdentifierList il;
+
+    public IdentifierList(String id) {
+        this.id = id;
+    }
+
+    public IdentifierList(String id, String comma, IdentifierList il) {
+        this.id = id;
+        this.comma = comma;
+        this.il = il;
+    }
+    
     
 }

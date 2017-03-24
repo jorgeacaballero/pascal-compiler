@@ -10,5 +10,24 @@ package pascal.ast;
  * @author jorgecaballero
  */
 public class FieldList {
+    public FixedPart fp;
+    public String sc;
+    public VariantPart vp;
+
+    public FieldList(FixedPart fp, String sc, VariantPart vp) {
+        this.fp = fp;
+        this.sc = sc;
+        this.vp = vp;
+    }
+
+    public FieldList(FixedPart fp) {
+        this.fp = fp;
+    }
+
+    public FieldList(VariantPart vp) {
+        this.vp = vp;
+    }
+    
+    
     
 }

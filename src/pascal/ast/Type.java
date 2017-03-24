@@ -10,5 +10,21 @@ package pascal.ast;
  * @author jorgecaballero
  */
 public class Type {
+    public SimpleType st;
+    public StructuredType strt;
+    public Constant c;
+
+    public Type(SimpleType st) {
+        this.st = st;
+    }
+
+    public Type(StructuredType strt) {
+        this.strt = strt;
+    }
+
+    public Type(Constant c) {
+        this.c = c;
+    }
+    
     
 }

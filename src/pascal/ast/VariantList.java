@@ -10,5 +10,19 @@ package pascal.ast;
  * @author jorgecaballero
  */
 public class VariantList {
+    public Variant var;
+    public VariantList vl;
+    public String sc;
+
+    public VariantList(Variant var) {
+        this.var = var;
+    }
+
+    public VariantList(Variant var, String sc, VariantList vl) {
+        this.var = var;
+        this.vl = vl;
+        this.sc = sc;
+    }
+    
     
 }

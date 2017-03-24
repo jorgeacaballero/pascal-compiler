@@ -10,5 +10,11 @@ package pascal.ast;
  * @author jorgecaballero
  */
 public class Constant {
+    public String c;
+
+    public Constant(String c) {
+        this.c = c;
+    }
+    
     
 }

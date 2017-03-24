@@ -136,189 +136,272 @@ pascalProgram::=
 
 
 programHeading::=
-								LEFT_PAR identifierList RIGHT_PAR{:
-									ProgramHeading r = new ProgramHeading();
+								LEFT_PAR:lpar identifierList:il RIGHT_PAR:rpar {:
+									ProgramHeading r = new ProgramHeading((String) lpar, (String) rpar, il);
 									RESULT = r;
 									  :}
 							;
 
 
 identifierList::=
-								ID  {:
-									  :}
+								ID:id {:
+									IdentifierList r = new IdentifierList((String) id);
+									RESULT = r;
+									:}
 							|
-								identifierList COMMA ID  {:
-									  :}
+								identifierList:il COMMA:c ID:id {:
+									IdentifierList r = new IdentifierList((String) id, (String) c, il);
+									RESULT = r;
+									:}
 							;
 
 
 block::=
-								labelDeclaration SEMICOLON block1  {:
-									  :}
+								labelDeclaration:d SEMICOLON:sc block1:b  {:
+									Block r = new Block(b,d,(String) sc);
+									RESULT = r;
+									:}
 							|
-								block1 {:
-									  :}
+								block1:b {:
+									Block r = new Block(b);
+									RESULT = r;
+									:}
 							;
 
 block1::=
-								constantDeclaration SEMICOLON block2{:
-									  :}
+								constantDeclaration:d SEMICOLON:sc block2:b {:
+									Block r = new Block(b,d,(String) sc);
+									RESULT = r;
+									:}
 							|
-								block2 {:
+								block2:b {:
+									Block r = new Block(b);
+									RESULT = r;
 									:}
 							;
 
 block2::=
-								typeDeclaration SEMICOLON block3{:
-									  :}
+								typeDeclaration:d SEMICOLON:sc block3:b {:
+									Block r = new Block(b,d,(String) sc);
+									RESULT = r;
+									:}
 							|
-								block3 {:
+								block3:b {:
+									Block r = new Block(b);
+									RESULT = r;
 									:}
 							;
 
 block3::=
-								variableDeclaration SEMICOLON block4{:
+								variableDeclaration:d SEMICOLON:sc block4:b {:
+									Block r = new Block(b,d,(String) sc);
+									RESULT = r;
 									  :}
 							|
-								block4 {:
+								block4:b {:
+									Block r = new Block(b);
+									RESULT = r;
 									:}
 							;
 
 block4::=
-								procAndFuncDeclaration SEMICOLON block5{:
+								procAndFuncDeclaration:d SEMICOLON:sc block5:b {:
+									Block r = new Block(b,d,(String) sc);
+									RESULT = r;
 									  :}
 							|
-								block5 {:
+								block5:b {:
+									Block r = new Block(b);
+									RESULT = r;
 									:}
 							;
 
 block5::=
-								BEGIN statementList END{:
-									  :}
+								BEGIN:b statementList:sl END:e {:
+									Block r = new Block(sl, (String) b, (String) e);
+									RESULT = r;
+									:}
 							;
 
 
 labelDeclaration::=
-								label INTEGER  {:
+								label:l INTEGER:i  {:
+									LabelDeclaration r = new LabelDeclaration(l, (String) i);
+									RESULT = r;
 									:}
 							|
-								labelDeclaration COMMA INTEGER  {:
+								labelDeclaration:ld COMMA:c INTEGER:i  {:
+									LabelDeclaration r = new LabelDeclaration(ld, (String) i, (String) c);
+									RESULT = r;
 									:}
 							;
 
 
 constantDeclaration::=
-							   CONST ID EQUALS constant  {:
+							   CONST:c ID:id EQUALS:eq constant:cons  {:
+							   		ConstantDeclaration r = new ConstantDeclaration((String) c, (String) id, (String) eq, cons);
+							   		RESULT = r;
 									:}
 							|
-							   constantDeclaration SEMICOLON  ID EQUALS constant  {:
+							   constantDeclaration:cd SEMICOLON:sc ID:id EQUALS:eq constant:cons  {:
+							   		ConstantDeclaration r = new ConstantDeclaration((String) id, (String) eq, (String) sc, cons, cd);
+							   		RESULT = r;
 									:}
 							;
 
 
 typeDeclaration::=
-							   type  ID EQUALS type  {:
+							   type:tl ID:id EQUALS:e type:tr {:
+								   	TypeDeclaration r = new TypeDeclaration((String) id, (String) e, tl, tr);
+								   	RESULT = r;
 									:}
 							|
-							   typeDeclaration SEMICOLON  ID EQUALS type  {:
+							   typeDeclaration:td SEMICOLON:sc ID:id EQUALS:e type:t {:
+							   		TypeDeclaration r = new TypeDeclaration((String) id, (String) e, (String) sc, t, td);
+								   	RESULT = r;
 									:}
 							;
 
 
 variableDeclaration::=
-							   VAR variableidList COLON type {:
-
+							   VAR:var variableidList:vil COLON:c type:t {:
+							   		VariableDeclaration r = new VariableDeclaration((String) var, (String) c, vil, t);
+							   		RESULT = r;
 									:}
 							|
-							   variableDeclaration SEMICOLON variableidList COLON type  {:
+							   variableDeclaration:vd SEMICOLON:sc variableidList:vil COLON:c type:t  {:
+							   		VariableDeclaration r = new VariableDeclaration((String) c, (String) sc, vil, vd,t);
+							   		RESULT = r;
 									:}
 							;
 
 variableidList::=
-							   ID  {:
+							   ID:id {:
+								   	VariableIdList r = new VariableIdList((String) id);
+								   	RESULT = r;
 									:}
 							|
-							   variableidList COMMA  ID  {:
+							   variableidList:vil COMMA:c  ID:id  {:
+							   		VariableIdList r = new VariableIdList((String) id, (String) c, vil);
+								   	RESULT = r;
 									:}
 							;
 
 constant::=
-								INTEGER {:
-									:}
+								INTEGER:c {:
+									Constant r = new Constant((String) c);
+									RESULT = r;
+;									:}
 							|
-								STRING{:
+								STRING:c {:
+									Constant r = new Constant((String) c);
+									RESULT = r;
 									:}
 							;
 
 
 type::=
-								simpleType  {:
+								simpleType:st  {:
+									Type r = new Type(st);
+									RESULT = r;
 									:}
 							|
-								structuredType  {:
+								structuredType:st  {:
+									Type r = new Type(st);
+									RESULT = r;
 									:}
 							|
-								constant  {:
+								constant:st  {:
+									Type r = new Type(st);
+									RESULT = r;
 									:}
 							;
 
 
 simpleType::=
-							   LEFT_PAR  identifierList RIGHT_PAR  {:
+								LEFT_PAR:lpar  identifierList:il RIGHT_PAR:rpar  {:
+									SimpleType r = new SimpleType((String) lpar, (String) rpar, il);
+									RESULT = r;
 									:}
 							|
-							 /*  constant ... constant  {:
+							/*  constant ... constant  {:
 									:}
-									| */
-							   ID {:
+							| */
+								ID:id {:
+									SimpleType r = new SimpleType((String) id);
+									RESULT = r;
 									:}
 							;
 
 
 structuredType::=
-								ARRAY LEFT_BRACKET indexList RIGHT_BRACKET OF type  {:
+								ARRAY:arr LEFT_BRACKET:lbra indexList:il RIGHT_BRACKET:rbra OF:of type:ty  {:
+									StructuredType r = new StructuredType((String) arr, (String) lbra, (String) rbra, (String) of, il, ty);
+									RESULT = r;
 									:}
 							|
-								RECORD fieldList END  {:
+								RECORD:rec fieldList:fl END:e  {:
+									StructuredType r = new StructuredType((String) e, (String) rec, fl);
+									RESULT = r;
 									:}
 							|
-								SET OF simpleType  {:
+								SET:s OF:o simpleType:st  {:
+									StructuredType r = new StructuredType((String) o, (String) s, st);
+									RESULT = r;
 									:}
 							|
-								FILE OF type  {:
+								FILE:f OF:o type:t  {:
+									StructuredType r = new StructuredType((String) o, (String) f, t);
+									RESULT = r;
 									:}
 							|
-								PACKED structuredType  {:
+								PACKED:p structuredType:st  {:
+									StructuredType r = new StructuredType((String) p, st);
+									RESULT = r;
 									:}
 							;
 
 
 indexList::=
-								simpleType  {:
+								simpleType:st  {:
+									IndexList r = new IndexList(st);
+									RESULT = r;
 									:}
 							|
-								indexList COMMA simpleType  {:
+								indexList:il COMMA:comma simpleType:st  {:
+									IndexList r = new IndexList(il, (String) comma, st);
+									RESULT = r;
 									:}
 							;
 
 
 fieldList::=
-								fixedPart  {:
+								fixedPart:fp  {:
+									FieldList r = new FieldList(fp);
+									RESULT = r;
 									:}
 							|
-								fixedPart SEMICOLON variantPart {:
+								fixedPart:fp SEMICOLON:sc variantPart:vp {:
+									FieldList r = new FieldList(fp, (String) sc, vp);
+									RESULT = r;
 									:}
 							|
-								variantPart {:
+								variantPart:vp {:
+									FieldList r = new FieldList(vp);
+									RESULT = r;
 									:}
 							;
 
 
 fixedPart::=
-								recordField {:
+								recordField:rf {:
+									FixedPart r = new FixedPart(rf);
+									RESULT = r;
 									:}
 							|
-								fixedPart SEMICOLON recordField {:
+								fixedPart:fp SEMICOLON:sc recordField:rf {:
+									FixedPart r = new FixedPart(fp, (String) sc, rf);
+									RESULT = r;
 									:}
 							;
 
@@ -328,40 +411,56 @@ recordField::=
 									RESULT = null;
 									:}
 							|
-								fieldidList:fl COLON:colon type:type   {:
+								fieldidList:fl COLON:colon type:type {:
+									RecordField r = new RecordField(fl, (String) colon, type);
+									RESULT = r;
 									:}
 							;
 
 
 fieldidList::=
 								ID:id {:
+									FieldIdList r = new FieldIdList((String) id);
+									RESULT = r;
 									:}
 							|
 								fieldidList:fl COMMA:comma ID:id  {:
+									FieldIdList r = new FieldIdList(fl, (String) comma, (String) id);
+									RESULT = r;
 									:}
 							;
 
 
 variantPart::=
 								CASE:caseexp tagField:tf OF:of variantList:vl {:
+									VariantPart r = new VariantPart((String) caseexp, tf, (String) of, vl);
+									RESULT = r;
 									:}
 							;
 
 
 tagField::=
 								ID:id  {:
+									TagField r = new TagField((String) id);
+									RESULT = r;
 									:}
 							|
 								ID:idl COLON:colon ID:idr  {:
+									TagField r = new TagField((String) idl, (String) idr, (String) colon);
+									RESULT = r;
 									:}
 							;
 
 
 variantList::=
 								variant:vari {:
+									VariantList r = new VariantList(vari);
+									RESULT = r;
 									:}
 							|
 								variantList:vl SEMICOLON:sc variant:vari {:
+									VariantList r = new VariantList(vari, (String) sc, vl);
+									RESULT = r;
 									:}
 							;
 
@@ -372,33 +471,47 @@ variant::=
 									:}
 							|
 								caseLabelList:cll COLON:colon LEFT_PAR:lpar fieldList:fl RIGHT_PAR:rpar {:
+									Variant r = new Variant(cll, (String) colon, (String) lpar, fl, (String) rpar);
+									RESULT = r;
 									:}
 							;
 
 
 caseLabelList::=
 								constant:c {:
+									CaseLabelList r = new CaseLabelList(c);
+									RESULT = r;
 									:}
 							|
 								caseLabelList:cll COMMA:comma constant:con  {:
+									CaseLabelList r = new CaseLabelList(cll, (String) comma, con);
+									RESULT = r;
 									:}
 							;
 
 
 procAndFuncDeclaration::=
 								procOrFunc:pof  {:
+									ProcAndFuncDeclaration r = new ProcAndFuncDeclaration(pof);
+									RESULT = r;
 									:}
 							|
 								procAndFuncDeclaration:pafd SEMICOLON:sc procOrFunc:pof {:
+									ProcAndFuncDeclaration r = new ProcAndFuncDeclaration(pafd, (String) sc, pof);
+									RESULT = r;
 									:}
 							;
 
 
 procOrFunc::=
 								PROCEDURE:proc ID:id parameters:par blockOrForward:blo {:
+									ProcOrFunc r = new ProcOrFunc((String) proc, (String) id, par, blo);
+									RESULT = r;
 									:}
 							|
 								FUNCTION:func ID:idl parameters:par COLON:colon ID:idr blockOrForward:bof {:
+									ProcOrFunc r = new ProcOrFunc((String) func, (String) idl, (String) idr, par, bof, (String) colon);
+									RESULT = r;
 									:}
 							;
 

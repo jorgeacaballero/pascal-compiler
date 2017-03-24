@@ -10,5 +10,17 @@ package pascal.ast;
  * @author jorgecaballero
  */
 public class FixedPart {
-    
+    public RecordField rf;
+    public FixedPart fp;
+    public String sc;
+
+    public FixedPart(RecordField rf) {
+        this.rf = rf;
+    }
+
+    public FixedPart(FixedPart fp, String sc, RecordField rf) {
+        this.rf = rf;
+        this.fp = fp;
+        this.sc = sc;
+    }
 }

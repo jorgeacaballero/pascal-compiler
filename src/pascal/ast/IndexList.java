@@ -10,5 +10,19 @@ package pascal.ast;
  * @author jorgecaballero
  */
 public class IndexList {
+    public SimpleType st;
+    public IndexList il;
+    public String comma;
+
+    public IndexList(SimpleType st) {
+        this.st = st;
+    }
+
+    public IndexList(IndexList il, String comma, SimpleType st) {
+        this.st = st;
+        this.il = il;
+        this.comma = comma;
+    }
+    
     
 }

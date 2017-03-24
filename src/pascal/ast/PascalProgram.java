@@ -9,7 +9,7 @@ package pascal.ast;
  *
  * @author jorgecaballero
  */
-public class PascalProgram extends TypeDeclaration implements TreeNode{
+public class PascalProgram {
     public String program;
     public String id;
     public ProgramHeading ph;
@@ -25,12 +25,5 @@ public class PascalProgram extends TypeDeclaration implements TreeNode{
         this.b = b;
         this.dot = dot;
     }
-    
-    
-    
-    @Override
-    public void accept(NodeVisitor visitor) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
+
 }
