@@ -17,6 +17,7 @@ public class PrimaryExpression {
     public ElementList elm;
     public Expression exp;
     public Variable var;
+    public String id;
 
     public PrimaryExpression(String tid, String lsign, ExpressionList el, String rsign) {
         this.tid = tid;

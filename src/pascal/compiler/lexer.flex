@@ -57,11 +57,12 @@ id = {letter}({letter}|{digit}|[_])*
 
 <YYINITIAL> {
 	[ \n\t]+		{ }
-	\"				{ string.setLength(0); string.append( yytext() ); yybegin(STRING); }
+	\'				{ string.setLength(0); string.append( yytext() ); yybegin(STRING); }
 	"{"				{ commentLine = yyline+1; stComment++; yybegin(COMMENT); }
 	"program"		{ return symbol("program", sym.PROGRAM); }
 	"begin"			{ return symbol("begin", sym.BEGIN); }
 	"writeln"		{ return symbol("writeln", sym.WRITE_LN); }
+	"readln"		{ return symbol("writeln", sym.READ_LN); }
 	"end"			{ return symbol("end", sym.END); }
 	"and"			{ return symbol("and", sym.AND); }
 	"array"			{ return symbol("array", sym.ARRAY); }
@@ -93,6 +94,7 @@ id = {letter}({letter}|{digit}|[_])*
 	"repeat"		{ return symbol("repeat", sym.REPEAT); }
 	"until"			{ return symbol("until", sym.UNTIL); }
 	"with"			{ return symbol("with", sym.WITH); }
+	"\'"				{ return symbol("\'", sym.QUOTE); }
 	"("				{ return symbol("(", sym.LEFT_PAR); }
 	")"				{ return symbol(")", sym.RIGHT_PAR); }
 	"["				{ return symbol("[", sym.LEFT_BRACKET); }
@@ -130,14 +132,14 @@ id = {letter}({letter}|{digit}|[_])*
 }
 
 <STRING> {
-      \"                             { string.append( yytext() );
+      \'                             { string.append( yytext() );
                                        yybegin(YYINITIAL);
                                        return symbol("string literal" ,sym.STRING_LITERAL, string.toString());}
-      [^\n\r\"\\]+                   { string.append( yytext() ); }
+      [^\n\r\'\\]+                   { string.append( yytext() ); }
       \\t                            { string.append('\t'); }
       \\n                            { string.append('\n'); }
       \\r                            { string.append('\r'); }
-      \\\"                           { string.append('\"'); }
+      \\\'                           { string.append('\''); }
       \\                             { string.append('\\'); }
  }
 

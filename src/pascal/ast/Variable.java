@@ -36,5 +36,9 @@ public class Variable {
         this.asig = asig;
     }
     
+    public Variable(String idl) {
+        this.idl = idl;
+    }
+    
     
 }
