@@ -1,4 +1,4 @@
-Program Lesson1_Program3(hello);
+Program Lesson1_Program3(hello, daniela);
 {one line}
 Var
     {

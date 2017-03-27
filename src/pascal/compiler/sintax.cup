@@ -8,7 +8,6 @@ parser code {:
 
 	public PascalProgram root = null;
 
-	/* Reporte de error encontrado. */
 	public void report_error(String message, Object info) {
 		StringBuilder m = new StringBuilder("Sintax Error");
 		if (info instanceof java_cup.runtime.Symbol) {
@@ -23,9 +22,6 @@ parser code {:
 		System.err.println(m);
 	}
 
-	/* Cuando se encuentra un error de donde el sistema no puede
-		recuperarse, se lanza un error fatal. Se despliega el mensaje
-		de error y se finaliza la ejecucion. */
 	public void report_fatal_error(String message, Object info) {
 		report_error(message, info);
 		System.exit(1);
@@ -35,9 +31,6 @@ parser code {:
 		report_error("on Token "+ cur_token, cur_token);
 	}
 
-	/* Metodo main para garantizar la ejecucion del analizador
-	   lexico y sintactico, ademas que se pase como parametro la tabla
-	   de simbolos correspondiente. */
 	public static void main(String[] args){
 		try {
 			parser asin = new parser(
