@@ -5,8 +5,5 @@ Var
 
 Begin {no semicolon}
 	Num1 := 2;
-	Num2 := 3;
-	Sum := Num1 + Num2; {addition}
-	Writeln(Sum);
-	Readln;
+    num2 := 3;
 End.

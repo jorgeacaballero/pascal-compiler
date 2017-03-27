@@ -16,8 +16,8 @@ La primera fase del proyecto consiste en crear el analizador léxico y sintác
 - Una constante de carácter (constchar) y una constante de string (conststr) se escriben entre comillas simples. Ejemplo: ‘a’ y ‘Número de cuenta’
 - El string deberá implementarse tal como lo hace el lenguaje Pascal con respecto a la longitud de la cadena, modo de almacenamiento, etc.
 - Deberán implementarse las funciones write y read para lectura y escritura de variables. Se deberá adaptar la gramática para incluir estas funciones.
-o La función read recibe como parámetro una variable donde se almacenará el valor leido. Este valor podrá ser de tipo integer, char o string, no podrán leerse datos de tipo boolean.
-o La función write recibe uno o dos parámetros. El primer parámetro es un conststr. El segundo parámetro (si existe) será una variable de tipo integer, char o string.
+- La función read recibe como parámetro una variable donde se almacenará el valor leido. Este valor podrá ser de tipo integer, char o string, no podrán leerse datos de tipo boolean.
+- La función write recibe uno o dos parámetros. El primer parámetro es un conststr. El segundo parámetro (si existe) será una variable de tipo integer, char o string.
 - Se deberán reconocer operaciones aritméticas conforme a la precedencia de operadores comúnmente conocida.
 - Se deberán reconocer expresiones booleanas conforme a la precedencia lógica ya conocida. Los operadores serán los mismos utilizados por Pascal (<>, =, >, <, >=, <=, and, or, not, etc.)
 - Los identificadores deberán empezar con una letra, seguidos de cero o más digitos o letras. Por letra entendemos caracteres de la a-z, A-Z o “_”.

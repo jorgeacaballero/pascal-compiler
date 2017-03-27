@@ -46,7 +46,7 @@ parser code {:
 
 terminal  PROGRAM, BEGIN, END, AND, ARRAY, CONST, DIV, DO, ELSE,
 		  FOR, FUNCTION, IF, NIL, NOT, OF, OR, PROCEDURE, RECORD, THEN, TO, DOWNTO,
-		  VAR, WHILE, LEFT_PAR, RIGHT_PAR, LEFT_BRACKET, RIGHT_BRACKET,
+		  VAR, WHILE, QUOTE, LEFT_PAR, RIGHT_PAR, LEFT_BRACKET, RIGHT_BRACKET,
 		  SEMICOLON, COLON, COMMA, DOT, ASIGN, PLUS, MINUS,
 		  DIVIDE, PRODUCT, XOR, MOD, EQUALS, NOT_EQUAL, GREATER_THAN, LESS_THAN,
 		  GREATER_EQUALS, LESS_EQUAL, INTEGER, WITH,
@@ -133,6 +133,10 @@ programHeading::=
 									ProgramHeading r = new ProgramHeading((String) lpar, (String) rpar, il);
 									RESULT = r;
 									  :}
+							|
+								empty {:
+									RESULT = null;
+									:}
 							;
 
 
@@ -603,13 +607,23 @@ statement::=
 									RESULT = r;
 									:}
 							|
-								WRITE_LN:wln LEFT_PAR:lpar expressionList:el RIGHT_PAR:rpar{:
-									Statement r = new Statement((String)wln, (String)lpar, el, (String)rpar);
+								WRITE_LN:wln LEFT_PAR:lpar STRING_LITERAL:sl COMMA:c ID:id RIGHT_PAR:rpar{:
+									Statement r = new Statement((String)wln, (String)lpar, (String)sl, (String)c, (String)id, (String)rpar);
 									RESULT = r;
 									:}
 							|
-								READ_LN:rdl LEFT_PAR:lpar expressionList:el RIGHT_PAR:rpar{:
-									Statement r = new Statement((String)rdl, (String)lpar, el, (String)rpar);
+								WRITE_LN:wln LEFT_PAR:lpar STRING_LITERAL:sl RIGHT_PAR:rpar{:
+									Statement r = new Statement((String)wln, (String)lpar, (String)sl, (String)rpar);
+									RESULT = r;
+									:}
+							|
+								WRITE_LN:wln LEFT_PAR:lpar ID:id RIGHT_PAR:rpar{:
+									Statement r = new Statement((String)wln, (String)lpar, (String)id, (String)rpar);
+									RESULT = r;
+									:}
+							|
+								READ_LN:rdl LEFT_PAR:lpar ID:id RIGHT_PAR:rpar{:
+									Statement r = new Statement((String)rdl, (String)lpar, (String)id, (String)rpar);
 									RESULT = r;
 									:}
 							|
@@ -643,8 +657,8 @@ statement::=
 									RESULT = r;
 									:}
 							|
-								variable:var expression:exp SEMICOLON:sc {:
-									Statement r = new Statement(var, exp, (String)sc);
+								variable:var expression:exp {:
+									Statement r = new Statement(var, exp);
 									RESULT = r;
 									:}
 							|
@@ -682,6 +696,11 @@ variable::=
 							|
 								ID:id ASIGN:a {:
 									Variable r = new Variable((String) id, (String) a);
+									RESULT = r;
+									:}
+							|
+								ID:id  {:
+									Variable r = new Variable((String) id);
 									RESULT = r;
 									:}
 							;
@@ -777,7 +796,7 @@ expression::=
 									:}
 							|
 								error {:
-									System.out.println("expression error");
+									System.err.println("Error, la expression no tiene operador.");
 									:}
 							;
 

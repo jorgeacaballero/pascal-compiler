@@ -23,6 +23,9 @@ public class Statement {
         public String wln;
         public String rln;
         
+        public String c;
+        public String sll;
+
         public Statement(String ifex, Expression exp, String then, Statement e, String elseex, Statement f){
 		this.ifex = ifex;
 		this.exp = exp;
@@ -39,6 +42,21 @@ public class Statement {
 		this.rpar = rpar;		
 	}
 
+	public Statement(String wln, String lpar, String id, String rpar){
+		this.id = id;
+		this.lpar = lpar;
+		this.el = el;
+		this.rpar = rpar;		
+	}
+
+	public Statement(String wln, String lpar, String sll, String c, String id, String rpar){
+		this.wln  = wln;
+		this.lpar = lpar;
+		this.sll = sll;
+		this.c = c;
+		this.id = id;
+		this.rpar = rpar;
+	}
 	
 //	public Statement(String wln, String lpar, ExpressionList el, String rpar){
 //		this.wln = wln;
@@ -122,9 +140,8 @@ public class Statement {
 
 	public Variable var;
 	public String sc;
-	public Statement(Variable var, Expression exp, String sc){
+	public Statement(Variable var, Expression exp){
 		this.var = var;
-		this.sc = sc;
 		this.exp = exp;
 	}
 
