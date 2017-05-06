@@ -28,7 +28,7 @@ parser code {:
 	}
 
 	public void syntax_error(Symbol cur_token) {
-		report_error("on Token "+ cur_token, cur_token);
+		report_error("on Token "+ cur_token.value, cur_token);
 	}
 
 	public static void main(String[] args){
@@ -36,7 +36,6 @@ parser code {:
 			parser asin = new parser(
 					new Lexer( new FileReader(args[0])));
 			Object result = asin.parse().value;
-			System.out.println("\n*** Resultados finales ***");
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -120,17 +119,29 @@ precedence right ELSE;
 start with pascalProgram;
 
 pascalProgram::=
-								PROGRAM:pro ID:id programHeading:ph SEMICOLON:sc block:b DOT:dt {:
-									  PascalProgram r = new PascalProgram((String) pro, (String) id, ph, (String) sc, b, (String) dt);
+								PROGRAM:pro ID:id programHeading:ph block:b END DOT {:
+									System.err.println("Falta un ; en la declaraion inicial del bloque principal.");
+									:}
+							|
+								PROGRAM:pro ID:id programHeading:ph SEMICOLON:sc block:b END DOT:dt {:
+									  PascalProgram r = new PascalProgram((String) id, ph, b);
 									  RESULT = r;
 									  parser.root = RESULT;
 									  :}
+							|
+								PROGRAM:pro ID:id programHeading:ph SEMICOLON:sc block:b END error {:
+									System.err.println("Falta un . al final del bloque principal.");
+									:}
+							|
+								PROGRAM:pro ID:id programHeading:ph SEMICOLON:sc block:b DOT:dt {:
+									System.err.println("Falta un END al final del bloque principal.");
+									:}
 							;
 
 
 programHeading::=
 								LEFT_PAR:lpar identifierList:il RIGHT_PAR:rpar {:
-									ProgramHeading r = new ProgramHeading((String) lpar, (String) rpar, il);
+									ProgramHeading r = new ProgramHeading(il);
 									RESULT = r;
 									  :}
 							|
@@ -147,7 +158,7 @@ identifierList::=
 									:}
 							|
 								identifierList:il COMMA:c ID:id {:
-									IdentifierList r = new IdentifierList((String) id, (String) c, il);
+									IdentifierList r = new IdentifierList((String) id, il);
 									RESULT = r;
 									:}
 							;
@@ -298,6 +309,10 @@ constant::=
 
 
 type::=
+								error {:
+									System.err.println("Error de sintaxis al momento de declarar una etiqueta.");
+									:}
+							|
 								simpleType:st  {:
 									Type r = new Type(st);
 									RESULT = r;

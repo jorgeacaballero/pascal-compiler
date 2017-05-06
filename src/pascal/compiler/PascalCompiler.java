@@ -18,6 +18,7 @@ import java_cup.runtime.*;
 import jflex.*;
 import pascal.ast.*;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import java.io.Reader;
@@ -37,7 +38,7 @@ public class PascalCompiler {
         CupGenerator.main(args);
         Reader reader;
         try {
-            reader = new BufferedReader(new FileReader("./test/test.pas"));
+            reader = new BufferedReader(new FileReader("./test/func.pas"));
             Lexer lexer = new Lexer(reader);
             
             ObjectMapper mapper = new ObjectMapper();
@@ -47,6 +48,7 @@ public class PascalCompiler {
                 .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
                 .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
                 .withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
+            mapper.setSerializationInclusion(Include.NON_NULL);
             //mapper.setVisibility(JsonMethod.FIELD, Visibility.ANY);
            
             parser cupParser = new parser(lexer);

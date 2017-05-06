@@ -10,20 +10,14 @@ package pascal.ast;
  * @author jorgecaballero
  */
 public class PascalProgram {
-    public String program;
     public String id;
-    public ProgramHeading ph;
-    public String sc;
-    public Block b;
-    public String dot;
+    public ProgramHeading programHeading;
+    public Block block;
 
-    public PascalProgram(String program, String id, ProgramHeading ph, String sc, Block b, String dot) {
-        this.program = program;
+    public PascalProgram(String id, ProgramHeading ph, Block b) {
         this.id = id;
-        this.ph = ph;
-        this.sc = sc;
-        this.b = b;
-        this.dot = dot;
+        this.programHeading = ph;
+        this.block = b;
     }
 
 }

@@ -28,12 +28,12 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
 	StringBuffer string = new StringBuffer();
 
 	private Symbol symbol(String name, int sym) {
-		System.out.println("name: " + name + " sym: " + sym);
+		//System.out.println("name: " + name + " sym: " + sym);
 		return new Symbol(sym, yyline, yycolumn);
 	}
 
 	private Symbol symbol(String name, int sym, Object val) {
-		System.out.println("name: " + name + " sym: " + sym + " val: " + val);
+		//System.out.println("name: " + name + " sym: " + sym + " val: " + val);
 		return new Symbol(sym, yyline, yycolumn, val);
 	}
 
@@ -57,7 +57,7 @@ id = {letter}({letter}|{digit}|[_])*
 
 <YYINITIAL> {
 	[ \n\t]+		{ }
-	\'				{ string.setLength(0); string.append( yytext() ); yybegin(STRING); }
+	\"				{ string.setLength(0); string.append( yytext() ); yybegin(STRING); }
 	"{"				{ commentLine = yyline+1; stComment++; yybegin(COMMENT); }
 	"program"		{ return symbol("program", sym.PROGRAM); }
 	"begin"			{ return symbol("begin", sym.BEGIN); }
@@ -94,7 +94,6 @@ id = {letter}({letter}|{digit}|[_])*
 	"repeat"		{ return symbol("repeat", sym.REPEAT); }
 	"until"			{ return symbol("until", sym.UNTIL); }
 	"with"			{ return symbol("with", sym.WITH); }
-	"\'"				{ return symbol("\'", sym.QUOTE); }
 	"("				{ return symbol("(", sym.LEFT_PAR); }
 	")"				{ return symbol(")", sym.RIGHT_PAR); }
 	"["				{ return symbol("[", sym.LEFT_BRACKET); }
@@ -132,14 +131,14 @@ id = {letter}({letter}|{digit}|[_])*
 }
 
 <STRING> {
-      \'                             { string.append( yytext() );
+      \"                             { string.append( yytext() );
                                        yybegin(YYINITIAL);
                                        return symbol("string literal" ,sym.STRING_LITERAL, string.toString());}
-      [^\n\r\'\\]+                   { string.append( yytext() ); }
+      [^\n\r\"\\]+                   { string.append( yytext() ); }
       \\t                            { string.append('\t'); }
       \\n                            { string.append('\n'); }
       \\r                            { string.append('\r'); }
-      \\\'                           { string.append('\''); }
+      \\\"                           { string.append('\"'); }
       \\                             { string.append('\\'); }
  }
 

@@ -1,12 +1,13 @@
-Program Lesson1_Program3(hello, daniela);
-{one line}
-Var
-    {
-    multi
-    line
-    }
-    Num1, Num2, Sum : Integer;
+Program Lesson1_Program3(hello, world);
+	{one line}
+	Var
+		{
+		multi
+		line
+		}
+		Num1, Num2, Sum : Integer;
 
-Begin {no semicolon}
-    Writeln( 'Num1' , num2 );
+	Begin {no semicolon}
+		Writeln( "Num1" , num2 );
+	End
 End.
